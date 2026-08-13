@@ -1,0 +1,35 @@
+{
+  "name": "uma-events",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Uma Events — public website, admin portal, and employee media workspace",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.4",
+    "@tanstack/react-query": "^5.74.4",
+    "framer-motion": "^12.9.2",
+    "next": "^15.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tus-js-client": "^4.3.1",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.4",
+    "@types/node": "^22.14.1",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "eslint": "^9.25.1",
+    "eslint-config-next": "^15.3.1",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3"
+  }
+}
