@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAnonClient } from "@/lib/supabase/anon";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import type { Media, Project, Service, StudioSettings } from "@/types";
 
 export async function getSettings() {
   if (!supabaseConfigured()) return null;
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   const { data, error } = await supabase.from("studio_settings").select("*").eq("id", 1).maybeSingle();
   if (error) throw error;
   return data as StudioSettings | null;
@@ -12,7 +12,7 @@ export async function getSettings() {
 
 export async function getPublishedServices() {
   if (!supabaseConfigured()) return [];
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   const { data, error } = await supabase
     .from("services")
     .select("*")
@@ -24,7 +24,7 @@ export async function getPublishedServices() {
 
 export async function getPublishedProjects(options?: { featured?: boolean; eventType?: string }) {
   if (!supabaseConfigured()) return [];
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   let query = supabase
     .from("projects")
     .select("*")
@@ -41,7 +41,7 @@ export async function getPublishedProjects(options?: { featured?: boolean; event
 
 export async function getProjectBySlug(slug: string) {
   if (!supabaseConfigured()) return null;
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   const { data, error } = await supabase
     .from("projects")
     .select("*")
@@ -54,7 +54,7 @@ export async function getProjectBySlug(slug: string) {
 
 export async function getProjectMedia(projectId: string) {
   if (!supabaseConfigured()) return [];
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   const { data, error } = await supabase
     .from("media")
     .select("*")
@@ -69,7 +69,7 @@ export async function getProjectMedia(projectId: string) {
 export async function getCoverMap(projects: Project[]) {
   const ids = projects.map((p) => p.cover_media_id).filter(Boolean) as string[];
   if (!ids.length) return new Map<string, Media>();
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   const { data } = await supabase.from("media").select("*").in("id", ids).eq("status", "READY");
   const map = new Map<string, Media>();
   for (const row of (data ?? []) as Media[]) {
@@ -80,7 +80,7 @@ export async function getCoverMap(projects: Project[]) {
 
 export async function getEventTypes() {
   if (!supabaseConfigured()) return [];
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   const { data } = await supabase.from("projects").select("event_type").eq("published", true);
   const types = Array.from(
     new Set((data ?? []).map((r: { event_type: string }) => r.event_type).filter(Boolean)),
@@ -91,7 +91,7 @@ export async function getEventTypes() {
 export async function signMediaUrl(path: string | null | undefined, expiresIn = 60 * 60 * 24) {
   if (!path) return null;
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
-  const supabase = await createClient();
+  const supabase = createAnonClient();
   const { data } = await supabase.storage.from("project-media").createSignedUrl(path, expiresIn);
   return data?.signedUrl ?? null;
 }
