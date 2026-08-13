@@ -43,7 +43,18 @@ export function slugify(input: string) {
 }
 
 export function siteUrl() {
-  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") || "";
+  const candidate = !raw
+    ? "http://localhost:3000"
+    : /^https?:\/\//i.test(raw)
+      ? raw
+      : `https://${raw}`;
+  try {
+    return new URL(candidate).toString().replace(/\/$/, "");
+  } catch {
+    // Invalid NEXT_PUBLIC_SITE_URL must not crash generateMetadata during /_not-found prerender.
+    return "http://localhost:3000";
+  }
 }
 
 export function isVideoMime(mime: string) {
