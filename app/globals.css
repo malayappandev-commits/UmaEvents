@@ -432,25 +432,33 @@ body {
   position: fixed;
   inset: 0 0 auto;
   z-index: 60;
-  transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-  border-bottom: 1px solid transparent;
-}
-
-.uma-nav--hero {
   background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.45s ease,
+    backdrop-filter 0.45s ease,
+    border-color 0.45s ease,
+    color 0.35s ease;
 }
 
-.uma-nav:not(.uma-nav--hero) {
-  background: color-mix(in srgb, var(--color-ink) 58%, transparent);
-  backdrop-filter: blur(16px) saturate(1.1);
-  border-bottom-color: color-mix(in srgb, var(--color-gold) 18%, transparent);
+.uma-nav--dark {
+  color: var(--color-ivory);
 }
 
-.uma-nav--scrolled {
-  background: color-mix(in srgb, var(--color-ink) 72%, transparent);
-  backdrop-filter: blur(18px) saturate(1.15);
-  border-bottom-color: color-mix(in srgb, var(--color-gold) 22%, transparent);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+.uma-nav--light {
+  color: var(--color-charcoal);
+}
+
+.uma-nav--dark.uma-nav--soft {
+  background: color-mix(in srgb, var(--color-ink) 22%, transparent);
+  backdrop-filter: blur(10px) saturate(1.05);
+  border-bottom-color: color-mix(in srgb, var(--color-gold) 12%, transparent);
+}
+
+.uma-nav--light.uma-nav--soft {
+  background: color-mix(in srgb, var(--color-ivory) 58%, transparent);
+  backdrop-filter: blur(10px) saturate(1.05);
+  border-bottom-color: color-mix(in srgb, var(--color-charcoal) 8%, transparent);
 }
 
 .uma-nav-bar {
@@ -474,7 +482,7 @@ body {
   font-size: 1.02rem;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--color-ivory);
+  color: inherit;
   white-space: nowrap;
 }
 
@@ -495,8 +503,9 @@ body {
   font-size: 0.68rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-ivory) 78%, transparent);
-  transition: color 0.3s ease;
+  color: inherit;
+  opacity: 0.78;
+  transition: color 0.3s ease, opacity 0.3s ease;
 }
 
 .uma-nav-link::after {
@@ -514,6 +523,7 @@ body {
 
 .uma-nav-link:hover,
 .uma-nav-link.is-active {
+  opacity: 1;
   color: var(--color-gold);
 }
 
@@ -530,13 +540,14 @@ body {
 
 .uma-nav-cta {
   display: none;
-  border: 1px solid color-mix(in srgb, var(--color-ivory) 28%, transparent);
+  border: 1px solid currentColor;
   padding: 0.55rem 0.9rem;
   font-size: 0.62rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-ivory);
-  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+  color: inherit;
+  opacity: 0.92;
+  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
 }
 
 @media (min-width: 900px) {
@@ -548,6 +559,7 @@ body {
 .uma-nav-cta:hover {
   border-color: var(--color-gold);
   color: var(--color-gold);
+  opacity: 1;
   background: color-mix(in srgb, var(--color-gold) 8%, transparent);
 }
 
@@ -559,7 +571,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  color: var(--color-ivory);
+  color: inherit;
 }
 
 @media (min-width: 900px) {
@@ -586,6 +598,7 @@ body {
 
 .uma-nav--open {
   background: var(--color-ink);
+  color: var(--color-ivory);
   backdrop-filter: none;
   border-bottom-color: color-mix(in srgb, var(--color-gold) 22%, transparent);
 }

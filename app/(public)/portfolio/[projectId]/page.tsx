@@ -75,7 +75,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <section className="relative h-[70vh] min-h-[480px] overflow-hidden bg-ink text-ivory">
+      <section className="uma-surface-dark relative h-[70vh] min-h-[480px] overflow-hidden bg-ink text-ivory">
         {hero?.fullUrl ? (
           hero.type === "VIDEO" ? (
             <video className="uma-cinematic-media absolute inset-0" src={hero.fullUrl} autoPlay muted loop playsInline />

@@ -7,19 +7,61 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { BRAND_NAME, PUBLIC_NAV } from "@/lib/public/nav";
 
+function detectSurface(pathname: string): "dark" | "light" {
+  const header = document.querySelector(".uma-nav");
+  const navH = header instanceof HTMLElement ? header.offsetHeight : 72;
+  const x = Math.min(Math.max(window.innerWidth / 2, 24), window.innerWidth - 24);
+  const y = Math.min(navH + 8, window.innerHeight - 4);
+  const stack = document.elementsFromPoint(x, y);
+
+  for (const el of stack) {
+    if (!(el instanceof Element)) continue;
+    if (el.closest(".uma-nav, .uma-intro")) continue;
+
+    const dark = el.closest(
+      ".uma-hero, .uma-chapter--ink, .uma-quote-band, .uma-footer, .bg-ink, .uma-surface-dark",
+    );
+    if (dark) return "dark";
+
+    const light = el.closest(".uma-chapter--ivory, .uma-chapter--cream, .uma-page, .bg-ivory, .bg-cream");
+    if (light) return "light";
+  }
+
+  if (pathname === "/" && window.scrollY < 80) return "dark";
+  return "light";
+}
+
 export function SiteNav() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const overHero = pathname === "/" && !scrolled;
+  const [surface, setSurface] = useState<"dark" | "light">(pathname === "/" ? "dark" : "light");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 18);
-    onScroll();
+    let frame = 0;
+    const update = () => {
+      setScrolled(window.scrollY > 24);
+      setSurface(detectSurface(pathname));
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        update();
+      });
+    };
+    update();
+    const later = window.setTimeout(update, 180);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.clearTimeout(later);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     setOpen(false);
@@ -30,12 +72,14 @@ export function SiteNav() {
     return () => document.body.classList.remove("uma-nav-open");
   }, [open]);
 
+  const onDark = open || surface === "dark";
+
   return (
     <header
       className={cn(
         "uma-nav",
-        overHero && "uma-nav--hero",
-        scrolled && "uma-nav--scrolled",
+        onDark ? "uma-nav--dark" : "uma-nav--light",
+        scrolled && !open && "uma-nav--soft",
         open && "uma-nav--open",
       )}
     >
