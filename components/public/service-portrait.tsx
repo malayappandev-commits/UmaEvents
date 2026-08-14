@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { UmaButton } from "@/components/public/ui";
-import type { CraftedService } from "@/lib/public/service-visuals";
 
 export function ServicePortrait({
   src,
