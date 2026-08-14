@@ -67,8 +67,7 @@ export function EnquiryForm({
     );
   }
 
-  const field =
-    "w-full border border-charcoal/15 bg-transparent px-4 py-3 text-sm outline-none transition focus:border-gold";
+  const field = "uma-field";
 
   return (
     <form action={onSubmit} className="grid gap-4 md:grid-cols-2">
@@ -104,9 +103,12 @@ export function EnquiryForm({
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="md:col-span-2 bg-charcoal px-6 py-4 text-[11px] tracking-[0.28em] text-ivory uppercase transition hover:bg-ink disabled:opacity-60"
+        className="uma-btn uma-btn-primary md:col-span-2 disabled:opacity-60"
       >
-        {status === "submitting" ? "Sending…" : "Send enquiry"}
+        <span>{status === "submitting" ? "Sending…" : "Send enquiry"}</span>
+        <span className="uma-btn-arrow" aria-hidden>
+          →
+        </span>
       </button>
     </form>
   );
