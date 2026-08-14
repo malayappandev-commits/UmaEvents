@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { getProjectBySlug, getProjectMedia, getSettings, signMediaUrl } from "@/lib/queries/public";
 import { EnquiryForm } from "@/components/public/enquiry-form";
 import { ProjectGallery } from "@/components/public/project-gallery";
+import { Eyebrow, UmaButton } from "@/components/public/ui";
 import { formatDate, siteUrl } from "@/lib/utils";
 
 type Props = { params: Promise<{ projectId: string }> };
@@ -75,21 +75,22 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <section className="relative h-[70vh] min-h-[480px] overflow-hidden bg-ink text-ivory">
+      <section className="uma-surface-dark relative h-[70vh] min-h-[480px] overflow-hidden bg-ink text-ivory">
         {hero?.fullUrl ? (
           hero.type === "VIDEO" ? (
-            <video className="absolute inset-0 h-full w-full object-cover" src={hero.fullUrl} autoPlay muted loop playsInline />
+            <video className="uma-cinematic-media absolute inset-0" src={hero.fullUrl} autoPlay muted loop playsInline />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={hero.fullUrl} alt={project.title} className="absolute inset-0 h-full w-full object-cover" />
+            <img src={hero.fullUrl} alt={project.title} className="uma-cinematic-media absolute inset-0" />
           )
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-earth/40 to-ink" />
+          <div className="uma-cinematic-fallback absolute inset-0" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-ink/30" />
-        <div className="relative flex h-full flex-col justify-end px-6 pb-16 md:px-16">
-          <p className="text-[11px] tracking-[0.32em] text-gold uppercase">{project.event_type}</p>
-          <h1 className="mt-3 font-serif text-5xl md:text-7xl">{project.title}</h1>
+        <div className="uma-cinematic-overlay" />
+        <div className="noise-overlay" />
+        <div className="relative flex h-full flex-col justify-end px-6 pb-16 pt-24 md:px-16">
+          <Eyebrow className="uma-eyebrow--gold">{project.event_type}</Eyebrow>
+          <h1 className="uma-display mt-3">{project.title}</h1>
           <p className="mt-3 text-ivory/75">
             {[project.location, formatDate(project.event_date)].filter(Boolean).join(" · ")}
           </p>
@@ -98,7 +99,7 @@ export default async function ProjectPage({ params }: Props) {
 
       <section className="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-12 md:px-10">
         <div className="md:col-span-4">
-          <p className="text-[11px] tracking-[0.28em] text-earth uppercase">The event</p>
+          <Eyebrow>The event</Eyebrow>
           <dl className="mt-6 space-y-4 text-sm">
             {client ? (
               <div>
@@ -127,7 +128,7 @@ export default async function ProjectPage({ params }: Props) {
           </dl>
         </div>
         <div className="md:col-span-8">
-          <p className="text-[11px] tracking-[0.28em] text-earth uppercase">Story</p>
+          <Eyebrow>Story</Eyebrow>
           <p className="mt-6 whitespace-pre-wrap text-lg leading-8 text-charcoal/80">
             {project.description || "A gathering produced by Uma Events."}
           </p>
@@ -146,7 +147,7 @@ export default async function ProjectPage({ params }: Props) {
       {photos.length ? (
         <section className="px-6 pb-16 md:px-10">
           <div className="mx-auto max-w-7xl">
-            <h2 className="font-serif text-4xl">Gallery</h2>
+            <h2 className="uma-section-title">Gallery</h2>
             <ProjectGallery items={photos} />
           </div>
         </section>
@@ -155,7 +156,7 @@ export default async function ProjectPage({ params }: Props) {
       {videos.length ? (
         <section className="bg-ink px-6 py-20 text-ivory md:px-10">
           <div className="mx-auto max-w-5xl">
-            <h2 className="font-serif text-4xl">Film</h2>
+            <h2 className="uma-section-title">Film</h2>
             <div className="mt-10 space-y-10">
               {videos.map((v) => (
                 <video key={v.id} controls className="w-full bg-black" src={v.fullUrl || undefined} poster={v.displayUrl || undefined}>
@@ -169,14 +170,14 @@ export default async function ProjectPage({ params }: Props) {
 
       <section className="bg-cream px-6 py-20 md:px-10">
         <div className="mx-auto max-w-3xl">
-          <h2 className="font-serif text-4xl">Plan a gathering</h2>
+          <h2 className="uma-section-title">Plan a gathering</h2>
           <p className="mt-3 text-charcoal/70">Enquire about an event in the same spirit as this one.</p>
           <div className="mt-8">
             <EnquiryForm projectId={project.id} eventTypes={[project.event_type].filter(Boolean)} />
           </div>
-          <Link href="/portfolio" className="mt-10 inline-block text-[11px] tracking-[0.28em] uppercase text-earth">
-            ← All events
-          </Link>
+          <UmaButton href="/portfolio" variant="ghost" className="mt-10">
+            View Gallery
+          </UmaButton>
         </div>
       </section>
     </main>

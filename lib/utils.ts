@@ -42,6 +42,27 @@ export function slugify(input: string) {
     .slice(0, 80);
 }
 
+export function whatsappHref(phone: string | null | undefined) {
+  if (!phone) return null;
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 7) return null;
+  const withCountry = digits.length === 10 ? `91${digits}` : digits;
+  return `https://wa.me/${withCountry}`;
+}
+
+export function optionalHttpUrl(value: unknown) {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  try {
+    const url = new URL(trimmed);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 export function siteUrl() {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") || "";
   const candidate = !raw

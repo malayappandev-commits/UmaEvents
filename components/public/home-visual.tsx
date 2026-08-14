@@ -1,89 +1,116 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { MagneticButton, useParallax } from "@/components/public/motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { CinematicBackdrop } from "@/components/public/cinematic-backdrop";
+import { UmaButton } from "@/components/public/ui";
+import { INTRO_DURATION_MS, INTRO_STORAGE_KEY } from "@/components/public/site-intro";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/public/nav";
+
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export function HomeVisual({
-  headline,
-  sub,
+  line,
+  supporting,
   image,
   video,
-  studio,
 }: {
-  headline: string;
-  sub: string;
+  line: string;
+  supporting: string;
   image: string | null | undefined;
   video: string | null | undefined;
-  studio: string;
 }) {
   const reduce = useReducedMotion();
-  const y = useParallax(28);
-  const lines = headline.split("\n").length > 1 ? headline.split("\n") : headline.split(/(?<=\.)\s+/);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [ready, setReady] = useState(!!reduce);
+
+  useEffect(() => {
+    if (reduce) {
+      setReady(true);
+      return;
+    }
+    let delay = 60;
+    try {
+      if (sessionStorage.getItem(INTRO_STORAGE_KEY) !== "1") delay = INTRO_DURATION_MS + 80;
+    } catch {
+      /* private mode */
+    }
+    const timer = window.setTimeout(() => setReady(true), delay);
+    return () => window.clearTimeout(timer);
+  }, [reduce]);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const contentY = useTransform(scrollYProgress, [0, 0.55], [0, 36]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.42], [1, 0]);
+  const contentScale = useTransform(scrollYProgress, [0, 0.55], [1, 0.985]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.08]);
+  const shadeOpacity = useTransform(scrollYProgress, [0, 0.6], [0, 0.42]);
+  const cueOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+
+  const enter = (delay: number, y = 28) => ({
+    initial: reduce ? false : { opacity: 0, y },
+    animate: ready || reduce ? { opacity: 1, y: 0 } : { opacity: 0, y },
+    transition: { duration: 0.95, delay: reduce ? 0 : delay, ease },
+  });
 
   return (
-    <section className="relative h-[100svh] min-h-[640px] overflow-hidden bg-ink text-ivory">
+    <section ref={sectionRef} className="uma-hero">
       <motion.div
-        className="absolute inset-0 scale-110"
-        style={reduce ? undefined : { y }}
+        className="absolute inset-0"
+        style={reduce ? undefined : { scale: bgScale }}
       >
-        {video ? (
-          <video
-            className="h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster={image || undefined}
-          >
-            <source src={video} />
-          </video>
-        ) : image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <div className="h-full w-full bg-[radial-gradient(ellipse_at_top,_#3a3228,_#0c0b0a_62%)]" />
-        )}
+        <CinematicBackdrop video={video} image={image} overlay="hero" eager />
       </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/25 to-ink/80" />
-      <div className="noise-overlay" />
-      <div className="relative flex h-full flex-col justify-end px-6 pb-20 md:px-16 md:pb-24">
-        <p className="text-[11px] tracking-[0.4em] text-gold uppercase">{studio} · Vijayawada</p>
-        <div className="mt-6 max-w-5xl overflow-hidden">
-          {(lines.length ? lines : [headline]).map((line, i) => (
-            <motion.h1
-              key={line + i}
-              initial={reduce ? false : { y: "110%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1.1, delay: 0.2 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              className="font-serif text-5xl leading-[0.95] md:text-7xl lg:text-8xl"
-            >
-              {line}
-            </motion.h1>
-          ))}
-        </div>
-        <motion.p
-          initial={reduce ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.8 }}
-          className="mt-6 max-w-xl text-base text-ivory/75 md:text-lg"
-        >
-          {sub}
+      <motion.div
+        className="uma-hero-veil"
+        aria-hidden
+        initial={false}
+        animate={{ opacity: reduce ? 0.18 : ready ? 0.12 : 0.55 }}
+        transition={{ duration: reduce ? 0 : 1.8, ease }}
+      />
+      {reduce ? null : <motion.div className="uma-hero-shade" style={{ opacity: shadeOpacity }} aria-hidden />}
+      <motion.div
+        className="uma-hero-copy uma-hero-copy--center"
+        style={reduce ? undefined : { y: contentY, opacity: contentOpacity, scale: contentScale }}
+      >
+        <motion.p className="uma-eyebrow uma-eyebrow--gold" {...enter(0.05, 12)}>
+          Vijayawada · Event Management
         </motion.p>
-        <div className="mt-10 flex flex-wrap gap-4">
-          <MagneticButton
-            href="/portfolio"
-            className="border border-gold bg-gold/10 px-6 py-3 text-[11px] tracking-[0.28em] uppercase"
-          >
-            Selected events
-          </MagneticButton>
-          <MagneticButton
-            href="/contact"
-            className="border border-ivory/30 px-6 py-3 text-[11px] tracking-[0.28em] uppercase"
-          >
-            Plan a gathering
-          </MagneticButton>
+        <div className="uma-hero-title uma-hero-title--center">
+          <motion.h1 className="uma-display uma-hero-brand" {...enter(0.28, 30)}>
+            {BRAND_NAME}
+          </motion.h1>
         </div>
-      </div>
+        <motion.p className="uma-hero-line" {...enter(0.55, 22)}>
+          {line || BRAND_TAGLINE}
+        </motion.p>
+        <motion.p className="uma-hero-sub uma-hero-sub--center" {...enter(0.78, 18)}>
+          {supporting}
+        </motion.p>
+        <motion.div className="uma-hero-actions uma-hero-actions--center" {...enter(1.02, 16)}>
+          <UmaButton href="/services" variant="secondary">
+            Explore Services
+          </UmaButton>
+          <UmaButton href="/contact" variant="primary">
+            Plan Your Event
+          </UmaButton>
+        </motion.div>
+      </motion.div>
+      <motion.div className="uma-scroll-cue" aria-hidden="true" style={reduce ? undefined : { opacity: cueOpacity }}>
+        <motion.div
+          className="uma-scroll-cue-inner"
+          initial={reduce ? false : { opacity: 0 }}
+          animate={ready || reduce ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.9, delay: reduce ? 0 : 1.45, ease }}
+        >
+          <span className="uma-scroll-cue-line" />
+          <span>Scroll to explore</span>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
