@@ -4,7 +4,8 @@ import Link from "next/link";
 import type { Service } from "@/types";
 import { Reveal } from "@/components/public/motion";
 import { Eyebrow } from "@/components/public/ui";
-import { serviceKind } from "@/lib/public/service-kind";
+import { ServiceActions, ServicePortrait } from "@/components/public/service-portrait";
+import { craftServices } from "@/lib/public/service-visuals";
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
@@ -15,7 +16,7 @@ export function HomeServices({
   services: Service[];
   backdrop: string;
 }) {
-  const rows = services.slice(0, 6);
+  const rows = craftServices(services);
 
   return (
     <section className="uma-services-cine uma-surface-dark">
@@ -32,38 +33,34 @@ export function HomeServices({
 
         {rows.length ? (
           <ol className="uma-service-list">
-            {rows.map((service, i) => {
-              const kind = serviceKind(service.title, service.category);
-              const preview = service.image_url;
-              return (
-                <li key={service.id}>
-                  <Reveal delay={Math.min(i * 0.06, 0.24)}>
-                    <Link href="/services" className="uma-service-line" data-kind={kind}>
-                      <span className="uma-service-aura" aria-hidden />
-                      <span className="uma-service-roman">{ROMAN[i] ?? i + 1}.</span>
-                      <span className="uma-service-copy">
-                        <span className="uma-service-title">{service.title}</span>
-                        {service.short_description ? (
-                          <span className="uma-service-desc">{service.short_description}</span>
-                        ) : null}
+            {rows.map((service, i) => (
+              <li key={service.key}>
+                <Reveal delay={Math.min(i * 0.05, 0.28)}>
+                  <div className="uma-service-line" data-kind={service.kind} tabIndex={0}>
+                    <span className="uma-service-roman">{ROMAN[i] ?? i + 1}.</span>
+                    <span className="uma-service-copy">
+                      <Link href={`/services#${service.slug}`} className="uma-service-title">
+                        {service.title}
+                      </Link>
+                      {service.description ? <span className="uma-service-desc">{service.description}</span> : null}
+                      <ServiceActions slug={service.slug} />
+                    </span>
+                    {service.illustration ? (
+                      <ServicePortrait src={service.illustration} title={service.title} className="uma-service-ident" />
+                    ) : null}
+                    {service.photo ? (
+                      <span className="uma-service-preview" aria-hidden>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={service.photo} alt="" loading="lazy" decoding="async" />
                       </span>
-                      {preview ? (
-                        <span className="uma-service-preview" aria-hidden>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={preview} alt="" loading="lazy" decoding="async" />
-                        </span>
-                      ) : null}
-                    </Link>
-                  </Reveal>
-                </li>
-              );
-            })}
+                    ) : null}
+                    <span className="uma-service-aura" aria-hidden />
+                  </div>
+                </Reveal>
+              </li>
+            ))}
           </ol>
-        ) : (
-          <p className="uma-empty uma-empty--on-ink">
-            Published services will appear here once the studio has marked them live.
-          </p>
-        )}
+        ) : null}
 
         <p className="uma-cine-more">
           <Link href="/services">See all services →</Link>
