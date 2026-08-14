@@ -5,7 +5,6 @@ import type { Service } from "@/types";
 import { Reveal } from "@/components/public/motion";
 import { Eyebrow } from "@/components/public/ui";
 import { serviceKind } from "@/lib/public/service-kind";
-import { slugify } from "@/lib/utils";
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
@@ -22,7 +21,6 @@ export function HomeServices({ services }: { services: Service[] }) {
       {rows.length ? (
         <ol className="uma-service-list">
           {rows.map((service, i) => {
-            const slug = slugify(service.title) || service.id;
             const kind = serviceKind(service.title, service.category);
             return (
               <li key={service.id}>
