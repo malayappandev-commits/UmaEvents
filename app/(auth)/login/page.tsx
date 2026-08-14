@@ -49,7 +49,9 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen bg-ink text-ivory">
       <div className="relative hidden flex-1 overflow-hidden md:block">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#3a3228,_#0c0b0a)]" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/visual/still-05.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/20" />
         <div className="noise-overlay" />
         <div className="relative flex h-full flex-col justify-end p-12">
           <p className="text-[11px] tracking-[0.4em] text-gold uppercase">Uma Events</p>

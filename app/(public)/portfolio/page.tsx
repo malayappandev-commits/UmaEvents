@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getCoverMap, getEventTypes, getPublishedProjects, signMediaUrl } from "@/lib/queries/public";
+import { PageBanner } from "@/components/public/page-banner";
+import { EventReel } from "@/components/public/event-reel";
+import { CineMosaic } from "@/components/public/cine-mosaic";
+import { Reveal } from "@/components/public/motion";
+import { UmaButton } from "@/components/public/ui";
 import { formatDate } from "@/lib/utils";
+import { DESIGN_STILLS } from "@/lib/public/design-visuals";
 
 export const metadata: Metadata = {
-  title: "Events",
+  title: "Gallery",
   description: "Selected events produced by Uma Events in Vijayawada.",
   alternates: { canonical: "/portfolio" },
 };
@@ -25,74 +31,95 @@ export default async function PortfolioPage({
     const map = await getCoverMap(projects);
     for (const p of projects) {
       const media = p.cover_media_id ? map.get(p.cover_media_id) : null;
-      covers[p.id] = await signMediaUrl(media?.thumbnail_url || media?.storage_path);
+      covers[p.id] = await signMediaUrl(media?.thumbnail_url || media?.storage_path || media?.public_url);
     }
   } catch {
     projects = [];
   }
 
-  return (
-    <main className="px-6 pb-24 pt-12 md:px-10">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Archive</p>
-        <h1 className="mt-4 font-serif text-5xl md:text-7xl">Selected events</h1>
-        {types.length ? (
-          <div className="mt-8 flex flex-wrap gap-2">
-            <Link
-              href="/portfolio"
-              className={`px-4 py-2 text-[11px] tracking-[0.2em] uppercase ${!type ? "bg-charcoal text-ivory" : "border border-charcoal/20"}`}
-            >
-              All
-            </Link>
-            {types.map((t) => (
-              <Link
-                key={t}
-                href={`/portfolio?type=${encodeURIComponent(t)}`}
-                className={`px-4 py-2 text-[11px] tracking-[0.2em] uppercase ${
-                  type === t ? "bg-charcoal text-ivory" : "border border-charcoal/20"
-                }`}
-              >
-                {t}
-              </Link>
-            ))}
-          </div>
-        ) : null}
+  const cmsFrames = projects
+    .map((p) => {
+      const src = covers[p.id];
+      if (!src) return null;
+      return {
+        id: p.id,
+        title: p.title,
+        href: `/portfolio/${p.slug}`,
+        eventType: p.event_type,
+        coverUrl: src,
+        meta: [p.location, formatDate(p.event_date)].filter(Boolean).join(" · "),
+      };
+    })
+    .filter(Boolean) as Array<{
+    id: string;
+    title: string;
+    href: string;
+    eventType: string;
+    coverUrl: string;
+    meta: string;
+  }>;
 
-        {projects.length ? (
-          <div className="mt-14 columns-1 gap-4 sm:columns-2 lg:columns-3">
-            {projects.map((p, i) => (
-              <Link
-                key={p.id}
-                href={`/portfolio/${p.slug}`}
-                className="group mb-4 block break-inside-avoid overflow-hidden bg-charcoal"
-              >
-                <div className={`relative ${i % 3 === 0 ? "aspect-[3/4]" : i % 3 === 1 ? "aspect-square" : "aspect-[4/5]"}`}>
-                  {covers[p.id] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={covers[p.id] || ""}
-                      alt={p.title}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-gradient-to-br from-earth/40 to-ink" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent opacity-90" />
-                  <div className="absolute bottom-0 p-5 text-ivory">
-                    <p className="text-[10px] tracking-[0.24em] text-gold uppercase">{p.event_type}</p>
-                    <h2 className="mt-1 font-serif text-2xl">{p.title}</h2>
-                    <p className="text-xs text-ivory/70">
-                      {[p.location, formatDate(p.event_date)].filter(Boolean).join(" · ")}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-16 text-charcoal/60">No published events yet.</p>
-        )}
-      </div>
+  const usingCms = cmsFrames.length > 0;
+  const reel = usingCms
+    ? cmsFrames
+    : DESIGN_STILLS.map((still, i) => ({
+        id: `visual-${i}`,
+        title: still.label,
+        href: "/contact",
+        eventType: null,
+        coverUrl: still.src,
+      }));
+
+  const mosaic = usingCms
+    ? cmsFrames.map((f) => ({ id: f.id, src: f.coverUrl, title: f.title, meta: f.meta, href: f.href }))
+    : DESIGN_STILLS.map((still, i) => ({
+        id: `mosaic-${i}`,
+        src: still.src,
+        title: still.label,
+      }));
+
+  return (
+    <main className="uma-cine-page">
+      <PageBanner
+        eyebrow="Gallery"
+        title="A glimpse of recent work"
+        copy={
+          usingCms
+            ? "Selected celebrations composed by Uma Events."
+            : "Event photography that sets the visual language of the studio. Published events appear here when they are marked live."
+        }
+        image={reel[0]?.coverUrl || DESIGN_STILLS[0].src}
+      />
+
+      {types.length ? (
+        <div className="uma-filter-row uma-surface-dark">
+          <Link href="/portfolio" className={!type ? "is-active" : undefined}>
+            All
+          </Link>
+          {types.map((t) => (
+            <Link key={t} href={`/portfolio?type=${encodeURIComponent(t)}`} className={type === t ? "is-active" : undefined}>
+              {t}
+            </Link>
+          ))}
+        </div>
+      ) : null}
+
+      <EventReel frames={reel} headed={false} />
+
+      <section className="uma-mosaic-section uma-surface-dark">
+        <Reveal className="uma-filmstrip-head">
+          <h2>Frames from the floor</h2>
+        </Reveal>
+        <CineMosaic frames={mosaic} />
+        {!usingCms ? (
+          <p className="uma-reel-hint">These stills are design-target photography, not published CMS projects.</p>
+        ) : null}
+        <div className="uma-chapter-foot">
+          <UmaButton href="/contact" variant="primary">
+            Plan Your Event
+          </UmaButton>
+        </div>
+      </section>
     </main>
   );
 }

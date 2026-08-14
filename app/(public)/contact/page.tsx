@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { getEventTypes, getSettings } from "@/lib/queries/public";
+import { getEventTypes, getPublishedServices, getSettings } from "@/lib/queries/public";
 import { EnquiryForm } from "@/components/public/enquiry-form";
+import { PageBanner } from "@/components/public/page-banner";
+import { Reveal } from "@/components/public/motion";
+import { Eyebrow } from "@/components/public/ui";
+import { whatsappHref } from "@/lib/utils";
+import { DESIGN_STILLS } from "@/lib/public/design-visuals";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -13,35 +18,47 @@ export default async function ContactPage() {
   let types: string[] = [];
   try {
     settings = await getSettings();
-    types = await getEventTypes();
+    const services = await getPublishedServices();
+    const fromProjects = await getEventTypes();
+    types = Array.from(
+      new Set([...fromProjects, ...services.map((s) => s.title), ...services.map((s) => s.category)].filter(Boolean)),
+    );
   } catch {
     settings = null;
   }
 
+  const whatsapp = whatsappHref(settings?.phone);
+
   return (
-    <main className="px-6 pb-24 pt-12 md:px-10">
-      <div className="mx-auto grid max-w-6xl gap-16 md:grid-cols-12">
-        <div className="md:col-span-5">
-          <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Contact</p>
-          <h1 className="mt-4 font-serif text-5xl md:text-6xl">Begin a conversation</h1>
-          <p className="mt-6 text-charcoal/70">
-            Tell Uma Events about the gathering. The studio will reply with next steps — not a menu of
-            packages.
-          </p>
-          <div className="mt-10 space-y-3 text-sm">
-            <p>{settings?.address || "Vijayawada, Andhra Pradesh"}</p>
-            {settings?.phone ? <p>{settings.phone}</p> : null}
-            {settings?.contact_email ? (
-              <a className="block hover:text-earth" href={`mailto:${settings.contact_email}`}>
-                {settings.contact_email}
+    <main className="uma-cine-page">
+      <PageBanner
+        eyebrow="Begin"
+        title="Plan Your Event"
+        copy="Tell Uma Events about the gathering. The studio will reply with next steps — not a menu of packages."
+        image={settings?.hero_image_url || DESIGN_STILLS[5].src}
+      />
+      <section className="uma-contact-cine uma-surface-dark">
+        <Reveal className="uma-contact-cine-copy">
+          <Eyebrow className="uma-eyebrow--gold">Studio</Eyebrow>
+          <p>{settings?.address || "Vijayawada, Andhra Pradesh"}</p>
+          <div className="uma-contact-secondary">
+            {settings?.phone ? (
+              <a className="uma-btn uma-btn-primary" href={`tel:${settings.phone.replace(/\s+/g, "")}`}>
+                <span>Call {settings.phone}</span>
               </a>
             ) : null}
+            {whatsapp ? (
+              <a className="uma-btn uma-btn-secondary" href={whatsapp} target="_blank" rel="noreferrer">
+                <span>WhatsApp</span>
+              </a>
+            ) : null}
+            {settings?.contact_email ? <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a> : null}
           </div>
-        </div>
-        <div className="md:col-span-7">
-          <EnquiryForm eventTypes={types} />
-        </div>
-      </div>
+        </Reveal>
+        <Reveal delay={0.08} className="uma-final-form">
+          <EnquiryForm eventTypes={types} tone="dark" />
+        </Reveal>
+      </section>
     </main>
   );
 }

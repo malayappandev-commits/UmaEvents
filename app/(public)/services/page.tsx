@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import { getPublishedServices } from "@/lib/queries/public";
+import { PageBanner } from "@/components/public/page-banner";
+import { HoverZoom, Reveal } from "@/components/public/motion";
+import { UmaButton } from "@/components/public/ui";
+import { ServiceActions } from "@/components/public/service-portrait";
+import { craftServices } from "@/lib/public/service-visuals";
+import { DESIGN_CRAFT_STILL } from "@/lib/public/design-visuals";
 
 export const metadata: Metadata = {
   title: "Services",
   description: "Event management services from Uma Events in Vijayawada — planned individually, not as packages.",
   alternates: { canonical: "/services" },
 };
+
+const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
 export default async function ServicesPage() {
   let services: Awaited<ReturnType<typeof getPublishedServices>> = [];
@@ -15,57 +23,54 @@ export default async function ServicesPage() {
     services = [];
   }
 
-  const groups = new Map<string, typeof services>();
-  for (const s of services) {
-    const key = s.category || "Services";
-    groups.set(key, [...(groups.get(key) || []), s]);
-  }
+  const rows = craftServices(services);
+  const banner = services.find((s) => s.image_url)?.image_url || DESIGN_CRAFT_STILL;
+  const cmsLive = services.length > 0;
 
   return (
-    <main className="px-6 pb-24 pt-12 md:px-10">
-      <div className="mx-auto max-w-6xl">
-        <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Services</p>
-        <h1 className="mt-4 max-w-3xl font-serif text-5xl leading-tight md:text-7xl">
-          What Uma Events can shape
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg text-charcoal/70">
-          These are capabilities, not packages. Every gathering is planned according to the brief —
-          there is no catalogue of tiers to choose from.
-        </p>
-        {services.length ? (
-          <div className="mt-16 space-y-16">
-            {[...groups.entries()].map(([cat, items]) => (
-              <section key={cat}>
-                <h2 className="text-[11px] tracking-[0.28em] text-earth uppercase">{cat}</h2>
-                <div className="mt-6 grid gap-8 md:grid-cols-2">
-                  {items.map((s, i) => (
-                    <article
-                      key={s.id}
-                      className="group overflow-hidden border border-charcoal/10 bg-paper"
-                      style={{ transform: i % 2 ? "translateY(12px)" : undefined }}
-                    >
-                      {s.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={s.image_url} alt={s.title} className="h-56 w-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-                      ) : (
-                        <div className="h-24 bg-gradient-to-r from-cream to-sand" />
-                      )}
-                      <div className="p-8">
-                        <h3 className="font-serif text-3xl">{s.title}</h3>
-                        <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{s.short_description}</p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-16 max-w-xl text-charcoal/60">
-            Published services will appear here once the studio has marked them live.
+    <main className="uma-cine-page">
+      <PageBanner
+        eyebrow="The craft"
+        title="What Uma Events can shape"
+        copy="These are capabilities, not packages. Every gathering is planned according to the brief."
+        image={banner}
+      />
+      <section className="uma-services-detail uma-surface-dark">
+        {!cmsLive ? (
+          <p className="uma-empty uma-empty--on-ink uma-services-note">
+            Published service notes from the studio will appear here when they are marked live.
           </p>
-        )}
-      </div>
+        ) : null}
+        <ol className="uma-services-detail-list">
+          {rows.map((service, i) => (
+            <li key={service.key} id={service.slug}>
+              <Reveal>
+                <article className="uma-service-detail" data-kind={service.kind}>
+                  {service.photo ? (
+                    <div className="uma-service-detail-photo">
+                      <HoverZoom className="h-full w-full">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={service.photo} alt="" loading="lazy" decoding="async" />
+                      </HoverZoom>
+                    </div>
+                  ) : null}
+                  <div className="uma-service-detail-text">
+                    <span className="uma-service-roman">{ROMAN[i] ?? i + 1}.</span>
+                    <h2>{service.title}</h2>
+                    {service.description ? <p>{service.description}</p> : null}
+                    <ServiceActions slug={service.slug} />
+                  </div>
+                </article>
+              </Reveal>
+            </li>
+          ))}
+        </ol>
+        <div className="uma-chapter-foot">
+          <UmaButton href="/contact" variant="primary">
+            Plan Your Event
+          </UmaButton>
+        </div>
+      </section>
     </main>
   );
 }

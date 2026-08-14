@@ -1,21 +1,17 @@
-import { getSettings } from "@/lib/queries/public";
 import { SiteNav } from "@/components/public/site-nav";
 import { PublicFooter } from "@/components/public/chrome";
+import { SiteIntro } from "@/components/public/site-intro";
+import { ServiceChapterProvider } from "@/components/public/service-chapter";
 
-export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  let name = "Uma Events";
-  try {
-    const settings = await getSettings();
-    name = settings?.studio_name || name;
-  } catch {
-    /* ignore */
-  }
-
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-ivory">
-      <SiteNav studioName={name} />
-      {children}
-      <PublicFooter />
-    </div>
+    <ServiceChapterProvider>
+      <div className="uma-public min-h-screen">
+        <SiteIntro />
+        <SiteNav />
+        {children}
+        <PublicFooter />
+      </div>
+    </ServiceChapterProvider>
   );
 }
