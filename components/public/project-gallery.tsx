@@ -20,14 +20,14 @@ export function ProjectGallery({ items }: { items: Item[] }) {
             key={item.id}
             type="button"
             onClick={() => setOpen(i)}
-            className="mb-3 block w-full overflow-hidden"
+            className="uma-hover-zoom mb-3 block w-full"
           >
             {item.displayUrl || item.fullUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={item.displayUrl || item.fullUrl || ""}
                 alt={item.filename}
-                className="w-full object-cover transition duration-500 hover:scale-[1.02]"
+                className="w-full object-cover"
               />
             ) : (
               <div className="aspect-[4/5] bg-cream" />

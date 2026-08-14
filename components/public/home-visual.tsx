@@ -1,88 +1,82 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { MagneticButton, useParallax } from "@/components/public/motion";
+import { CinematicBackdrop } from "@/components/public/cinematic-backdrop";
+import { UmaButton } from "@/components/public/ui";
+import { useParallax } from "@/components/public/motion";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/public/nav";
 
 export function HomeVisual({
-  headline,
-  sub,
+  line,
+  supporting,
   image,
   video,
-  studio,
 }: {
-  headline: string;
-  sub: string;
+  line: string;
+  supporting: string;
   image: string | null | undefined;
   video: string | null | undefined;
-  studio: string;
 }) {
   const reduce = useReducedMotion();
-  const y = useParallax(28);
-  const lines = headline.split("\n").length > 1 ? headline.split("\n") : headline.split(/(?<=\.)\s+/);
+  const y = useParallax(18);
 
   return (
-    <section className="relative h-[100svh] min-h-[640px] overflow-hidden bg-ink text-ivory">
-      <motion.div
-        className="absolute inset-0 scale-110"
-        style={reduce ? undefined : { y }}
-      >
-        {video ? (
-          <video
-            className="h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster={image || undefined}
-          >
-            <source src={video} />
-          </video>
-        ) : image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <div className="h-full w-full bg-[radial-gradient(ellipse_at_top,_#3a3228,_#0c0b0a_62%)]" />
-        )}
+    <section className="uma-hero">
+      <motion.div className="absolute inset-0 scale-[1.05]" style={reduce ? undefined : { y }}>
+        <CinematicBackdrop video={video} image={image} overlay="hero" />
       </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/25 to-ink/80" />
-      <div className="noise-overlay" />
-      <div className="relative flex h-full flex-col justify-end px-6 pb-20 md:px-16 md:pb-24">
-        <p className="text-[11px] tracking-[0.4em] text-gold uppercase">{studio} · Vijayawada</p>
-        <div className="mt-6 max-w-5xl overflow-hidden">
-          {(lines.length ? lines : [headline]).map((line, i) => (
-            <motion.h1
-              key={line + i}
-              initial={reduce ? false : { y: "110%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1.1, delay: 0.2 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              className="font-serif text-5xl leading-[0.95] md:text-7xl lg:text-8xl"
-            >
-              {line}
-            </motion.h1>
-          ))}
+      <div className="uma-hero-copy uma-hero-copy--center">
+        <motion.p
+          className="uma-eyebrow uma-eyebrow--gold"
+          initial={reduce ? false : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Vijayawada · Event Management
+        </motion.p>
+        <div className="uma-hero-title uma-hero-title--center">
+          <motion.h1
+            initial={reduce ? false : { y: "108%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            className="uma-display uma-hero-brand"
+          >
+            {BRAND_NAME}
+          </motion.h1>
         </div>
+        <motion.p
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.75 }}
+          className="uma-hero-line"
+        >
+          {line || BRAND_TAGLINE}
+        </motion.p>
         <motion.p
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.8 }}
-          className="mt-6 max-w-xl text-base text-ivory/75 md:text-lg"
+          transition={{ delay: 0.7, duration: 0.7 }}
+          className="uma-hero-sub uma-hero-sub--center"
         >
-          {sub}
+          {supporting}
         </motion.p>
-        <div className="mt-10 flex flex-wrap gap-4">
-          <MagneticButton
-            href="/portfolio"
-            className="border border-gold bg-gold/10 px-6 py-3 text-[11px] tracking-[0.28em] uppercase"
-          >
-            Selected events
-          </MagneticButton>
-          <MagneticButton
-            href="/contact"
-            className="border border-ivory/30 px-6 py-3 text-[11px] tracking-[0.28em] uppercase"
-          >
-            Plan a gathering
-          </MagneticButton>
-        </div>
+        <motion.div
+          className="uma-hero-actions uma-hero-actions--center"
+          initial={reduce ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.65 }}
+        >
+          <UmaButton href="/services" variant="secondary">
+            Explore Services
+          </UmaButton>
+          <UmaButton href="/contact" variant="primary">
+            Plan Your Event
+          </UmaButton>
+        </motion.div>
+      </div>
+      <div className="uma-scroll-cue" aria-hidden="true">
+        <span className="uma-scroll-cue-line" />
+        <span>Scroll to explore</span>
       </div>
     </section>
   );

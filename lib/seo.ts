@@ -33,6 +33,12 @@ export function defaultMetadata(settings: StudioSettings | null): Metadata {
       images: ogImage ? [ogImage] : undefined,
     },
     alternates: { canonical: url },
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "32x32" },
+        { url: "/icon.svg", type: "image/svg+xml" },
+      ],
+    },
   };
 }
 

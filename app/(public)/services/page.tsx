@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { getPublishedServices } from "@/lib/queries/public";
+import { HoverZoom, Reveal } from "@/components/public/motion";
+import { Eyebrow, UmaButton } from "@/components/public/ui";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -22,39 +24,39 @@ export default async function ServicesPage() {
   }
 
   return (
-    <main className="px-6 pb-24 pt-12 md:px-10">
+    <main className="uma-page">
       <div className="mx-auto max-w-6xl">
-        <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Services</p>
-        <h1 className="mt-4 max-w-3xl font-serif text-5xl leading-tight md:text-7xl">
-          What Uma Events can shape
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg text-charcoal/70">
-          These are capabilities, not packages. Every gathering is planned according to the brief —
-          there is no catalogue of tiers to choose from.
-        </p>
+        <Reveal>
+          <Eyebrow>Services</Eyebrow>
+          <h1 className="uma-display mt-4 max-w-3xl">What Uma Events can shape</h1>
+          <p className="mt-6 max-w-2xl text-lg text-charcoal/70">
+            These are capabilities, not packages. Every gathering is planned according to the brief —
+            there is no catalogue of tiers to choose from.
+          </p>
+        </Reveal>
         {services.length ? (
           <div className="mt-16 space-y-16">
             {[...groups.entries()].map(([cat, items]) => (
               <section key={cat}>
-                <h2 className="text-[11px] tracking-[0.28em] text-earth uppercase">{cat}</h2>
+                <h2 className="uma-eyebrow">{cat}</h2>
                 <div className="mt-6 grid gap-8 md:grid-cols-2">
                   {items.map((s, i) => (
-                    <article
-                      key={s.id}
-                      className="group overflow-hidden border border-charcoal/10 bg-paper"
-                      style={{ transform: i % 2 ? "translateY(12px)" : undefined }}
-                    >
-                      {s.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={s.image_url} alt={s.title} className="h-56 w-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-                      ) : (
-                        <div className="h-24 bg-gradient-to-r from-cream to-sand" />
-                      )}
-                      <div className="p-8">
-                        <h3 className="font-serif text-3xl">{s.title}</h3>
-                        <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{s.short_description}</p>
-                      </div>
-                    </article>
+                    <Reveal key={s.id} delay={i * 0.05}>
+                      <article className="group overflow-hidden border border-charcoal/10 bg-paper">
+                        {s.image_url ? (
+                          <HoverZoom>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={s.image_url} alt={s.title} className="h-56 w-full object-cover" />
+                          </HoverZoom>
+                        ) : (
+                          <div className="h-24 bg-gradient-to-r from-cream to-sand" />
+                        )}
+                        <div className="p-8">
+                          <h3 className="font-serif text-3xl">{s.title}</h3>
+                          <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{s.short_description}</p>
+                        </div>
+                      </article>
+                    </Reveal>
                   ))}
                 </div>
               </section>
@@ -65,6 +67,9 @@ export default async function ServicesPage() {
             Published services will appear here once the studio has marked them live.
           </p>
         )}
+        <UmaButton href="/contact" variant="ghost" className="mt-16">
+          Plan Your Event
+        </UmaButton>
       </div>
     </main>
   );

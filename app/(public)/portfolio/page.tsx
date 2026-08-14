@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getCoverMap, getEventTypes, getPublishedProjects, signMediaUrl } from "@/lib/queries/public";
+import { HoverZoom, Reveal } from "@/components/public/motion";
+import { Eyebrow } from "@/components/public/ui";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Events",
+  title: "Gallery",
   description: "Selected events produced by Uma Events in Vijayawada.",
   alternates: { canonical: "/portfolio" },
 };
@@ -32,10 +34,12 @@ export default async function PortfolioPage({
   }
 
   return (
-    <main className="px-6 pb-24 pt-12 md:px-10">
+    <main className="uma-page">
       <div className="mx-auto max-w-7xl">
-        <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Archive</p>
-        <h1 className="mt-4 font-serif text-5xl md:text-7xl">Selected events</h1>
+        <Reveal>
+          <Eyebrow>Gallery</Eyebrow>
+          <h1 className="uma-display mt-4">Selected events</h1>
+        </Reveal>
         {types.length ? (
           <div className="mt-8 flex flex-wrap gap-2">
             <Link
@@ -66,14 +70,10 @@ export default async function PortfolioPage({
                 href={`/portfolio/${p.slug}`}
                 className="group mb-4 block break-inside-avoid overflow-hidden bg-charcoal"
               >
-                <div className={`relative ${i % 3 === 0 ? "aspect-[3/4]" : i % 3 === 1 ? "aspect-square" : "aspect-[4/5]"}`}>
+                <HoverZoom className={`${i % 3 === 0 ? "aspect-[3/4]" : i % 3 === 1 ? "aspect-square" : "aspect-[4/5]"} relative`}>
                   {covers[p.id] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={covers[p.id] || ""}
-                      alt={p.title}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                    />
+                    <img src={covers[p.id] || ""} alt={p.title} className="h-full w-full object-cover" />
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-earth/40 to-ink" />
                   )}
@@ -85,7 +85,7 @@ export default async function PortfolioPage({
                       {[p.location, formatDate(p.event_date)].filter(Boolean).join(" · ")}
                     </p>
                   </div>
-                </div>
+                </HoverZoom>
               </Link>
             ))}
           </div>
