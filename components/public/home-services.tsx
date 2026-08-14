@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import type { Service } from "@/types";
 import { Reveal } from "@/components/public/motion";
 import { Eyebrow } from "@/components/public/ui";
-import { ServiceActions, ServicePortrait } from "@/components/public/service-portrait";
+import { ServiceActions, ServiceTitleLink, ServicesIndexLink } from "@/components/public/service-portrait";
 import { craftServices } from "@/lib/public/service-visuals";
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
@@ -39,15 +38,12 @@ export function HomeServices({
                   <div className="uma-service-line" data-kind={service.kind} tabIndex={0}>
                     <span className="uma-service-roman">{ROMAN[i] ?? i + 1}.</span>
                     <span className="uma-service-copy">
-                      <Link href={`/services#${service.slug}`} className="uma-service-title">
+                      <ServiceTitleLink slug={service.slug} className="uma-service-title">
                         {service.title}
-                      </Link>
+                      </ServiceTitleLink>
                       {service.description ? <span className="uma-service-desc">{service.description}</span> : null}
                       <ServiceActions slug={service.slug} />
                     </span>
-                    {service.illustration ? (
-                      <ServicePortrait src={service.illustration} title={service.title} className="uma-service-ident" />
-                    ) : null}
                     {service.photo ? (
                       <span className="uma-service-preview" aria-hidden>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -63,7 +59,7 @@ export function HomeServices({
         ) : null}
 
         <p className="uma-cine-more">
-          <Link href="/services">See all services →</Link>
+          <ServicesIndexLink>See all services →</ServicesIndexLink>
         </p>
       </div>
     </section>

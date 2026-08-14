@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/public/nav";
 
 export const INTRO_STORAGE_KEY = "uma.intro.seen";
-export const INTRO_DURATION_MS = 2400;
+export const INTRO_DURATION_MS = 1800;
 
 export function SiteIntro() {
+  const pathname = usePathname();
   const reduce = useReducedMotion();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || pathname !== "/") return;
     try {
       if (sessionStorage.getItem(INTRO_STORAGE_KEY) === "1") return;
     } catch {
@@ -28,7 +30,7 @@ export function SiteIntro() {
       }
     }, INTRO_DURATION_MS);
     return () => window.clearTimeout(done);
-  }, [reduce]);
+  }, [pathname, reduce]);
 
   return (
     <AnimatePresence>
@@ -37,17 +39,27 @@ export function SiteIntro() {
           className="uma-intro"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           role="status"
-          aria-label="Uma Events"
+          aria-label="Welcome to Uma Events"
         >
           <div className="uma-intro-glow" aria-hidden />
           <div className="noise-overlay" />
+          <motion.div
+            className="uma-intro-walker"
+            initial={{ x: "-46vw" }}
+            animate={{ x: "22vw" }}
+            transition={{ duration: 1.55, ease: [0.22, 1, 0.36, 1] }}
+            aria-hidden
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/visual/services/wedding.webp" alt="" />
+          </motion.div>
           <motion.p
             className="uma-intro-mark"
-            initial={{ opacity: 0, letterSpacing: "0.55em" }}
+            initial={{ opacity: 0, letterSpacing: "0.5em" }}
             animate={{ opacity: 1, letterSpacing: "0.38em" }}
-            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             {BRAND_NAME}
           </motion.p>
@@ -55,7 +67,7 @@ export function SiteIntro() {
             className="uma-intro-line"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.7 }}
+            transition={{ delay: 0.25, duration: 0.55 }}
           >
             {BRAND_TAGLINE}
           </motion.p>
@@ -63,16 +75,9 @@ export function SiteIntro() {
             <motion.span
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
-              transition={{ duration: 1.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.45, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
-          <motion.div
-            className="uma-intro-sweep"
-            initial={{ x: "-120%", opacity: 0 }}
-            animate={{ x: "120%", opacity: [0, 0.55, 0] }}
-            transition={{ duration: 1.6, delay: 0.35, ease: "easeInOut" }}
-            aria-hidden
-          />
         </motion.div>
       ) : null}
     </AnimatePresence>
