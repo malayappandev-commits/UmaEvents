@@ -13,6 +13,7 @@ export const DESIGN_STILLS = [
   { src: "/visual/still-02.jpg", label: "White pavilion stage" },
   { src: "/visual/still-08.jpg", label: "Processional arch" },
   { src: "/visual/still-06.jpg", label: "Temple pavilion" },
+  { src: "/visual/still-10.jpg", label: "Celebration floor" },
 ] as const;
 
 export const DESIGN_QUOTE_STILL = "/visual/still-05.jpg";

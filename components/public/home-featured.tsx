@@ -22,20 +22,20 @@ export function HomeFeatured({
     <section className="uma-featured-cine uma-surface-dark">
       <Reveal>
         <article className="uma-featured-story">
-          <div className="uma-featured-story-media">
-            <HoverZoom className="h-full w-full">
-                      {covers[event.id] ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={covers[event.id] || ""}
-                          alt={event.title}
-                          className="h-full w-full object-cover"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      ) : null}
-            </HoverZoom>
-          </div>
+          {covers[event.id] ? (
+            <div className="uma-featured-story-media">
+              <HoverZoom className="h-full w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={covers[event.id] || ""}
+                  alt={event.title}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </HoverZoom>
+            </div>
+          ) : null}
           <div className="uma-featured-story-copy">
             <Eyebrow className="uma-eyebrow--gold">{event.event_type || "Featured"}</Eyebrow>
             <h2 className="uma-featured-title">{event.title}</h2>

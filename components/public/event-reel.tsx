@@ -13,7 +13,13 @@ export type ReelFrame = {
   coverUrl: string;
 };
 
-export function EventReel({ frames }: { frames: ReelFrame[] }) {
+export function EventReel({
+  frames,
+  headed = true,
+}: {
+  frames: ReelFrame[];
+  headed?: boolean;
+}) {
   const scroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,10 +79,12 @@ export function EventReel({ frames }: { frames: ReelFrame[] }) {
 
   return (
     <section id="reel" className="uma-filmstrip-section uma-surface-dark">
-      <Reveal className="uma-filmstrip-head">
-        <Eyebrow className="uma-eyebrow--gold">The Reel</Eyebrow>
-        <h2>A glimpse of recent work</h2>
-      </Reveal>
+      {headed ? (
+        <Reveal className="uma-filmstrip-head">
+          <Eyebrow className="uma-eyebrow--gold">The Reel</Eyebrow>
+          <h2>A glimpse of recent work</h2>
+        </Reveal>
+      ) : null}
 
       <div ref={scroller} className="uma-reel" tabIndex={0} aria-label="Event filmstrip">
         {frames.map((frame, i) => (
@@ -94,7 +102,13 @@ export function EventReel({ frames }: { frames: ReelFrame[] }) {
         ))}
       </div>
       <p className="uma-reel-hint">
-        Drag to explore · <Link href="/portfolio">see full gallery →</Link>
+        {headed ? (
+          <>
+            Drag to explore · <Link href="/portfolio">see full gallery →</Link>
+          </>
+        ) : (
+          "Drag or swipe to explore"
+        )}
       </p>
     </section>
   );

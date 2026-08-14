@@ -11,7 +11,7 @@ function isDarkSurface(el: Element | null) {
   if (!el) return false;
   return Boolean(
     el.closest(
-      ".uma-hero, .uma-chapter--ink, .uma-chapter--film, .uma-home-cine, .uma-quote-band, .uma-filmstrip-section, .uma-services-cine, .uma-final-cta, .uma-statement, .uma-footer, .bg-ink, .uma-surface-dark",
+      ".uma-hero, .uma-chapter--ink, .uma-chapter--film, .uma-home-cine, .uma-cine-page, .uma-page-banner, .uma-quote-band, .uma-filmstrip-section, .uma-services-cine, .uma-why-cine, .uma-final-cta, .uma-statement, .uma-footer, .bg-ink, .uma-surface-dark",
     ),
   );
 }
@@ -28,7 +28,7 @@ export function SiteNav() {
   const reduce = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [surface, setSurface] = useState<"dark" | "light">(pathname === "/" ? "dark" : "light");
+  const [surface, setSurface] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
     let frame = 0;
@@ -52,7 +52,7 @@ export function SiteNav() {
           return;
         }
       }
-      setSurface(pathname === "/" && window.scrollY < 100 ? "dark" : "light");
+      setSurface("dark");
     };
 
     const onScroll = () => {
@@ -68,7 +68,7 @@ export function SiteNav() {
     const t2 = window.setTimeout(probe, 280);
 
     const nodes = document.querySelectorAll(
-      ".uma-hero, .uma-chapter, .uma-quote-band, .uma-page, .uma-footer, .uma-surface-dark",
+      ".uma-hero, .uma-chapter, .uma-quote-band, .uma-page, .uma-footer, .uma-surface-dark, .uma-page-banner, .uma-cine-page, .uma-home-cine",
     );
     const io = new IntersectionObserver(probe, {
       root: null,

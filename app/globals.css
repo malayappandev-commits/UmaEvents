@@ -1504,7 +1504,8 @@ body.uma-nav-open {
 }
 
 /* Homepage cinematic film language */
-.uma-public:has(.uma-home-cine) {
+.uma-public:has(.uma-home-cine),
+.uma-public:has(.uma-cine-page) {
   background: #120e0c;
 }
 
@@ -1779,6 +1780,19 @@ body.uma-nav-open {
   color: color-mix(in srgb, var(--color-ivory) 62%, transparent);
 }
 
+.uma-home-cine .uma-service-line:hover .uma-service-title,
+.uma-cine-page .uma-service-line:hover .uma-service-title {
+  color: var(--color-gold);
+}
+
+.uma-cine-page .uma-service-cat {
+  color: var(--color-gold);
+}
+
+.uma-cine-page .uma-section-title {
+  color: var(--color-ivory);
+}
+
 .uma-service-preview--slot {
   display: none;
   background: linear-gradient(160deg, #3a2f26, #120e0c);
@@ -1842,6 +1856,24 @@ body.uma-nav-open {
 
 .uma-featured-story-copy .uma-featured-title {
   color: var(--color-ivory);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+
+.uma-featured-meta,
+.uma-featured-desc {
+  margin-top: 0.85rem;
+  color: color-mix(in srgb, var(--color-ivory) 72%, transparent);
+  line-height: 1.7;
+}
+
+.uma-featured-actions {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
 }
 
 .uma-final-cta {
@@ -1851,6 +1883,7 @@ body.uma-nav-open {
   justify-content: center;
   padding: 6rem 1.5rem 5rem;
   text-align: center;
+  background: rgba(18, 14, 12, 0.42);
 }
 
 .uma-final-cta::after {
@@ -1888,9 +1921,411 @@ body.uma-nav-open {
   text-align: left;
 }
 
-.uma-chapter--film {
-  background: transparent;
+.uma-home-cine .uma-trust-item h3 {
   color: var(--color-ivory);
+}
+
+.uma-home-cine .uma-trust-item p:last-child {
+  color: color-mix(in srgb, var(--color-ivory) 68%, transparent);
+}
+
+.uma-trust-cine {
+  position: relative;
+  z-index: 1;
+  padding: 2rem 1.5rem 5rem;
+}
+
+.uma-page-banner {
+  position: relative;
+  min-height: 68vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  color: var(--color-ivory);
+}
+
+.uma-page-banner {
+  min-height: 72svh;
+}
+
+.uma-page-banner-media {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  object-fit: cover;
+  animation: uma-banner-drift 28s ease-in-out infinite alternate;
+}
+
+@keyframes uma-banner-drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+.uma-page-banner-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(18, 14, 12, 0.2) 0%, rgba(18, 14, 12, 0.15) 40%, rgba(18, 14, 12, 0.78) 100%),
+    radial-gradient(ellipse at center, transparent 40%, rgba(18, 14, 12, 0.35) 100%);
+}
+
+.uma-page-banner-copy {
+  position: relative;
+  z-index: 1;
+  width: min(80rem, 100%);
+  padding: 8rem 1.5rem 3.5rem;
+}
+
+@media (min-width: 768px) {
+  .uma-page-banner-copy {
+    padding: 9rem 2.5rem 4rem;
+  }
+}
+
+.uma-page-banner-title {
+  margin-top: 0.85rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 1.08;
+  max-width: 16ch;
+}
+
+.uma-page-banner-sub {
+  margin-top: 1.2rem;
+  max-width: 36rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-ivory) 78%, transparent);
+}
+
+.uma-cine-split {
+  display: grid;
+  gap: 2rem;
+  padding: 4.5rem 1.5rem 6rem;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .uma-cine-split {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 4rem;
+    padding: 5.5rem 2.5rem 7rem;
+  }
+}
+
+.uma-cine-split-media {
+  min-height: 28rem;
+  overflow: hidden;
+  border-radius: 48% 48% 16px 16px / 14% 14% 16px 16px;
+}
+
+.uma-cine-split-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 28rem;
+}
+
+.uma-cine-lead {
+  margin-top: 1.1rem;
+  font-size: 1.08rem;
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--color-ivory) 78%, transparent);
+  white-space: pre-wrap;
+}
+
+.uma-cine-meta {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 640px) {
+  .uma-cine-meta {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.uma-cine-meta dd {
+  margin-top: 0.45rem;
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  color: var(--color-ivory);
+}
+
+.uma-why-cine {
+  position: relative;
+  isolation: isolate;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  padding: 6rem 1.5rem;
+}
+
+.uma-why-cine-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.uma-why-cine-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uma-why-cine-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(18, 14, 12, 0.82) 0%, rgba(18, 14, 12, 0.45) 55%, rgba(18, 14, 12, 0.2) 100%);
+}
+
+.uma-why-cine-copy {
+  position: relative;
+  z-index: 1;
+  width: min(44rem, 100%);
+}
+
+.uma-why-cine-copy h2 {
+  margin-top: 0.8rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+}
+
+.uma-why-cine-copy > div > p,
+.uma-why-cine-copy p {
+  margin-top: 1.1rem;
+  line-height: 1.75;
+  color: color-mix(in srgb, var(--color-ivory) 78%, transparent);
+}
+
+.uma-why-list {
+  list-style: none;
+  margin-top: 2rem;
+}
+
+.uma-why-item {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  gap: 0.85rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-gold) 16%, transparent);
+}
+
+.uma-why-item h3 {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  color: var(--color-ivory);
+}
+
+.uma-why-item p {
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+}
+
+.uma-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.uma-filter-row a {
+  border: 1px solid color-mix(in srgb, var(--color-gold) 28%, transparent);
+  padding: 0.55rem 0.95rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ivory);
+}
+
+.uma-filter-row a.is-active {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  border-color: var(--color-gold);
+}
+
+.uma-mosaic-section {
+  padding: 2rem 1.5rem 5.5rem;
+}
+
+.uma-mosaic {
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (min-width: 768px) {
+  .uma-mosaic {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .uma-mosaic {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .uma-mosaic-frame:nth-child(6n + 1) {
+    grid-column: span 7;
+    aspect-ratio: 16 / 10;
+  }
+
+  .uma-mosaic-frame:nth-child(6n + 2) {
+    grid-column: span 5;
+    margin-top: 2.5rem;
+  }
+
+  .uma-mosaic-frame:nth-child(6n + 3),
+  .uma-mosaic-frame:nth-child(6n + 4),
+  .uma-mosaic-frame:nth-child(6n + 5) {
+    grid-column: span 4;
+  }
+
+  .uma-mosaic-frame:nth-child(6n) {
+    grid-column: span 8;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.uma-mosaic-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 52px 8px 52px 8px;
+}
+
+.uma-mosaic-frame:nth-child(even) {
+  border-radius: 8px 52px 8px 52px;
+}
+
+.uma-mosaic-frame:nth-child(3n) {
+  border-radius: 48% 48% 12px 12px / 12% 12% 12px 12px;
+}
+
+.uma-mosaic-media,
+.uma-mosaic-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uma-mosaic-cap {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  padding: 1.1rem;
+  background: linear-gradient(180deg, transparent, rgba(11, 10, 9, 0.86));
+  color: var(--color-ivory);
+}
+
+.uma-mosaic-cap h3 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.25rem;
+}
+
+.uma-mosaic-cap p {
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--color-ivory) 65%, transparent);
+}
+
+.uma-services-detail {
+  padding: 3.5rem 1.5rem 5.5rem;
+}
+
+.uma-services-detail-list {
+  list-style: none;
+  max-width: 70rem;
+  margin-inline: auto;
+}
+
+.uma-service-detail {
+  display: grid;
+  gap: 1.5rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-gold) 16%, transparent);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .uma-service-detail {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 3.5rem;
+  }
+
+  .uma-services-detail-list li:nth-child(even) .uma-service-detail {
+    direction: rtl;
+  }
+
+  .uma-services-detail-list li:nth-child(even) .uma-service-detail > * {
+    direction: ltr;
+  }
+}
+
+.uma-service-detail-photo {
+  min-height: 16rem;
+  overflow: hidden;
+  border-radius: 46% 46% 14px 14px / 14% 14% 14px 14px;
+}
+
+.uma-service-detail-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: 16rem;
+  object-fit: cover;
+}
+
+.uma-service-detail-text h2 {
+  margin-top: 0.4rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  color: var(--color-ivory);
+}
+
+.uma-service-detail-text p {
+  margin-top: 0.7rem;
+  color: color-mix(in srgb, var(--color-ivory) 70%, transparent);
+  line-height: 1.7;
+}
+
+.uma-contact-cine {
+  display: grid;
+  gap: 2.5rem;
+  padding: 4rem 1.5rem 6rem;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 900px) {
+  .uma-contact-cine {
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+.uma-contact-cine-copy {
+  color: color-mix(in srgb, var(--color-ivory) 82%, transparent);
+  line-height: 1.7;
+}
+
+.uma-cine-page {
+  color: var(--color-ivory);
+  background: transparent;
 }
 
 @media (max-width: 480px) {
@@ -1902,6 +2337,22 @@ body.uma-nav-open {
   .uma-featured-story-media {
     min-height: 58vh;
     border-radius: 36% 36% 12px 12px / 12% 12% 12px 12px;
+  }
+
+  .uma-page-banner {
+    min-height: 78svh;
+  }
+
+  .uma-cine-split-media,
+  .uma-cine-split-media img,
+  .uma-service-detail-photo,
+  .uma-service-detail-photo img {
+    min-height: 22rem;
+  }
+
+  .uma-nav-cta,
+  .uma-btn {
+    min-height: 2.75rem;
   }
 }
 
@@ -1935,7 +2386,9 @@ body.uma-nav-open {
 
   .uma-trust-item:hover h3,
   .uma-service-line:hover .uma-service-title,
-  .uma-reel-frame .uma-hover-zoom:hover img {
+  .uma-reel-frame .uma-hover-zoom:hover img,
+  .uma-page-banner-media {
     transform: none;
+    animation: none;
   }
 }

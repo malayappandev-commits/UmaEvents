@@ -59,7 +59,11 @@ export function HomeServices({
               );
             })}
           </ol>
-        ) : null}
+        ) : (
+          <p className="uma-empty uma-empty--on-ink">
+            Published services will appear here once the studio has marked them live.
+          </p>
+        )}
 
         <p className="uma-cine-more">
           <Link href="/services">See all services →</Link>

@@ -45,8 +45,8 @@ export default async function ProjectPage({ params }: Props) {
   const signed = await Promise.all(
     media.map(async (m) => ({
       ...m,
-      displayUrl: await signMediaUrl(m.thumbnail_url || m.storage_path),
-      fullUrl: await signMediaUrl(m.storage_path),
+      displayUrl: await signMediaUrl(m.thumbnail_url || m.storage_path || m.public_url),
+      fullUrl: await signMediaUrl(m.storage_path || m.public_url),
     })),
   );
 
@@ -73,7 +73,7 @@ export default async function ProjectPage({ params }: Props) {
   };
 
   return (
-    <main>
+    <main className="uma-cine-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="uma-surface-dark relative h-[70vh] min-h-[480px] overflow-hidden bg-ink text-ivory">
         {hero?.fullUrl ? (
@@ -84,7 +84,10 @@ export default async function ProjectPage({ params }: Props) {
             <img src={hero.fullUrl} alt={project.title} className="uma-cinematic-media absolute inset-0" />
           )
         ) : (
-          <div className="uma-cinematic-fallback absolute inset-0" />
+          <div className="uma-cinematic-fallback absolute inset-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/visual/still-01.jpg" alt="" className="h-full w-full object-cover" />
+          </div>
         )}
         <div className="uma-cinematic-overlay" />
         <div className="noise-overlay" />
@@ -97,45 +100,45 @@ export default async function ProjectPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-12 md:px-10">
+      <section className="uma-cine-page uma-surface-dark mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-12 md:px-10">
         <div className="md:col-span-4">
-          <Eyebrow>The event</Eyebrow>
-          <dl className="mt-6 space-y-4 text-sm">
+          <Eyebrow className="uma-eyebrow--gold">The event</Eyebrow>
+          <dl className="mt-6 space-y-4 text-sm text-ivory/75">
             {client ? (
               <div>
-                <dt className="text-charcoal/50">Host</dt>
+                <dt className="uma-eyebrow uma-eyebrow--gold">Host</dt>
                 <dd>{client}</dd>
               </div>
             ) : null}
             {project.photographer ? (
               <div>
-                <dt className="text-charcoal/50">Photography</dt>
+                <dt className="uma-eyebrow uma-eyebrow--gold">Photography</dt>
                 <dd>{project.photographer}</dd>
               </div>
             ) : null}
             {project.videographer ? (
               <div>
-                <dt className="text-charcoal/50">Film</dt>
+                <dt className="uma-eyebrow uma-eyebrow--gold">Film</dt>
                 <dd>{project.videographer}</dd>
               </div>
             ) : null}
             {project.guest_count ? (
               <div>
-                <dt className="text-charcoal/50">Guests</dt>
+                <dt className="uma-eyebrow uma-eyebrow--gold">Guests</dt>
                 <dd>{project.guest_count}</dd>
               </div>
             ) : null}
           </dl>
         </div>
         <div className="md:col-span-8">
-          <Eyebrow>Story</Eyebrow>
-          <p className="mt-6 whitespace-pre-wrap text-lg leading-8 text-charcoal/80">
+          <Eyebrow className="uma-eyebrow--gold">Story</Eyebrow>
+          <p className="mt-6 whitespace-pre-wrap text-lg leading-8 text-ivory/80">
             {project.description || "A gathering produced by Uma Events."}
           </p>
           {project.event_highlights?.length ? (
             <ul className="mt-8 grid gap-2 sm:grid-cols-2">
               {project.event_highlights.map((h) => (
-                <li key={h} className="border-l border-gold pl-4 text-sm text-charcoal/80">
+                <li key={h} className="border-l border-gold pl-4 text-sm text-ivory/80">
                   {h}
                 </li>
               ))}
@@ -145,7 +148,7 @@ export default async function ProjectPage({ params }: Props) {
       </section>
 
       {photos.length ? (
-        <section className="px-6 pb-16 md:px-10">
+        <section className="uma-cine-page uma-surface-dark px-6 pb-16 md:px-10">
           <div className="mx-auto max-w-7xl">
             <h2 className="uma-section-title">Gallery</h2>
             <ProjectGallery items={photos} />
@@ -168,14 +171,14 @@ export default async function ProjectPage({ params }: Props) {
         </section>
       ) : null}
 
-      <section className="bg-cream px-6 py-20 md:px-10">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="uma-section-title">Plan a gathering</h2>
-          <p className="mt-3 text-charcoal/70">Enquire about an event in the same spirit as this one.</p>
-          <div className="mt-8">
-            <EnquiryForm projectId={project.id} eventTypes={[project.event_type].filter(Boolean)} />
+      <section className="uma-final-cta uma-surface-dark">
+        <div className="uma-final-cta-inner">
+          <h2>Plan a gathering</h2>
+          <p className="uma-contact-lead uma-contact-lead--center">Enquire about an event in the same spirit as this one.</p>
+          <div className="uma-final-form mt-8">
+            <EnquiryForm projectId={project.id} eventTypes={[project.event_type].filter(Boolean)} tone="dark" />
           </div>
-          <UmaButton href="/portfolio" variant="ghost" className="mt-10">
+          <UmaButton href="/portfolio" variant="secondary" className="mt-10">
             View Gallery
           </UmaButton>
         </div>

@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import { getPublishedServices } from "@/lib/queries/public";
+import { PageBanner } from "@/components/public/page-banner";
 import { HoverZoom, Reveal } from "@/components/public/motion";
-import { Eyebrow, UmaButton } from "@/components/public/ui";
+import { UmaButton } from "@/components/public/ui";
+import { serviceKind } from "@/lib/public/service-kind";
+import { DESIGN_CRAFT_STILL, DESIGN_STILLS } from "@/lib/public/design-visuals";
 
 export const metadata: Metadata = {
   title: "Services",
   description: "Event management services from Uma Events in Vijayawada — planned individually, not as packages.",
   alternates: { canonical: "/services" },
 };
+
+const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
 export default async function ServicesPage() {
   let services: Awaited<ReturnType<typeof getPublishedServices>> = [];
@@ -17,60 +22,53 @@ export default async function ServicesPage() {
     services = [];
   }
 
-  const groups = new Map<string, typeof services>();
-  for (const s of services) {
-    const key = s.category || "Services";
-    groups.set(key, [...(groups.get(key) || []), s]);
-  }
-
   return (
-    <main className="uma-page">
-      <div className="mx-auto max-w-6xl">
-        <Reveal>
-          <Eyebrow>Services</Eyebrow>
-          <h1 className="uma-display mt-4 max-w-3xl">What Uma Events can shape</h1>
-          <p className="mt-6 max-w-2xl text-lg text-charcoal/70">
-            These are capabilities, not packages. Every gathering is planned according to the brief —
-            there is no catalogue of tiers to choose from.
-          </p>
-        </Reveal>
+    <main className="uma-cine-page">
+      <PageBanner
+        eyebrow="The craft"
+        title="What Uma Events can shape"
+        copy="These are capabilities, not packages. Every gathering is planned according to the brief."
+        image={services.find((s) => s.image_url)?.image_url || DESIGN_CRAFT_STILL}
+      />
+      <section className="uma-services-detail uma-surface-dark">
         {services.length ? (
-          <div className="mt-16 space-y-16">
-            {[...groups.entries()].map(([cat, items]) => (
-              <section key={cat}>
-                <h2 className="uma-eyebrow">{cat}</h2>
-                <div className="mt-6 grid gap-8 md:grid-cols-2">
-                  {items.map((s, i) => (
-                    <Reveal key={s.id} delay={i * 0.05}>
-                      <article className="group overflow-hidden border border-charcoal/10 bg-paper">
-                        {s.image_url ? (
-                          <HoverZoom>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={s.image_url} alt={s.title} className="h-56 w-full object-cover" />
-                          </HoverZoom>
-                        ) : (
-                          <div className="h-24 bg-gradient-to-r from-cream to-sand" />
-                        )}
-                        <div className="p-8">
-                          <h3 className="font-serif text-3xl">{s.title}</h3>
-                          <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{s.short_description}</p>
-                        </div>
-                      </article>
-                    </Reveal>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
+          <ol className="uma-services-detail-list">
+            {services.map((service, i) => {
+              const kind = serviceKind(service.title, service.category);
+              const visual = service.image_url || DESIGN_STILLS[i % DESIGN_STILLS.length].src;
+              return (
+                <li key={service.id}>
+                  <Reveal>
+                    <article className="uma-service-detail" data-kind={kind}>
+                      <div className="uma-service-detail-photo">
+                        <HoverZoom className="h-full w-full">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={visual} alt={service.image_url ? service.title : ""} loading="lazy" decoding="async" />
+                        </HoverZoom>
+                      </div>
+                      <div className="uma-service-detail-text">
+                        <span className="uma-service-roman">{ROMAN[i] ?? i + 1}.</span>
+                        {service.category ? <p className="uma-service-cat">{service.category}</p> : null}
+                        <h2>{service.title}</h2>
+                        {service.short_description ? <p>{service.short_description}</p> : null}
+                      </div>
+                    </article>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ol>
         ) : (
-          <p className="mt-16 max-w-xl text-charcoal/60">
+          <p className="uma-empty uma-empty--on-ink">
             Published services will appear here once the studio has marked them live.
           </p>
         )}
-        <UmaButton href="/contact" variant="ghost" className="mt-16">
-          Plan Your Event
-        </UmaButton>
-      </div>
+        <div className="uma-chapter-foot">
+          <UmaButton href="/contact" variant="primary">
+            Plan Your Event
+          </UmaButton>
+        </div>
+      </section>
     </main>
   );
 }
