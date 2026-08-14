@@ -12,12 +12,14 @@ export function CinematicBackdrop({
   image,
   alt = "",
   className,
+  overlay = "default",
   children,
 }: {
   video?: string | null;
   image?: string | null;
   alt?: string;
   className?: string;
+  overlay?: "default" | "hero" | "quote";
   children?: ReactNode;
 }) {
   return (
@@ -39,7 +41,7 @@ export function CinematicBackdrop({
       ) : (
         <div className="uma-cinematic-fallback" />
       )}
-      <div className="uma-cinematic-overlay" />
+      <div className={cn("uma-cinematic-overlay", overlay !== "default" && `uma-cinematic-overlay--${overlay}`)} />
       <div className="noise-overlay" />
       {children}
     </div>

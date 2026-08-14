@@ -8,9 +8,11 @@ import { enquirySchema } from "@/lib/validations/enquiry";
 export function EnquiryForm({
   projectId,
   eventTypes,
+  tone = "light",
 }: {
   projectId?: string;
   eventTypes: string[];
+  tone?: "light" | "dark";
 }) {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
@@ -58,16 +60,16 @@ export function EnquiryForm({
 
   if (status === "done") {
     return (
-      <div className="border border-gold/40 bg-cream/50 px-8 py-12 text-center">
+      <div className={tone === "dark" ? "border border-gold/35 bg-white/5 px-8 py-12 text-center text-ivory" : "border border-gold/40 bg-cream/50 px-8 py-12 text-center"}>
         <p className="font-serif text-3xl">Thank you</p>
-        <p className="mt-3 text-sm text-charcoal/70">
+        <p className={tone === "dark" ? "mt-3 text-sm text-ivory/70" : "mt-3 text-sm text-charcoal/70"}>
           Your enquiry has been received. The Uma Events team will be in touch.
         </p>
       </div>
     );
   }
 
-  const field = "uma-field";
+  const field = tone === "dark" ? "uma-field uma-field--dark" : "uma-field";
 
   return (
     <form action={onSubmit} className="grid gap-4 md:grid-cols-2">
@@ -99,7 +101,11 @@ export function EnquiryForm({
         placeholder="Tell us about the gathering"
         className={`${field} md:col-span-2`}
       />
-      {error ? <p className="md:col-span-2 text-sm text-red-800">{error}</p> : null}
+      {error ? (
+        <p className={tone === "dark" ? "md:col-span-2 text-sm text-red-200" : "md:col-span-2 text-sm text-red-800"}>
+          {error}
+        </p>
+      ) : null}
       <button
         type="submit"
         disabled={status === "submitting"}

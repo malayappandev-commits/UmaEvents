@@ -19,7 +19,7 @@ export async function PublicFooter() {
         <div>
           <p className="uma-footer-mark">{BRAND_NAME}</p>
           <p className="uma-footer-tagline">
-            {settings?.tagline || "Event management and planning from Vijayawada."}
+            {settings?.tagline || "Event management and planning from Vijayawada — celebrations composed with care."}
           </p>
         </div>
         <div className="uma-footer-meta">
