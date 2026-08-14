@@ -254,89 +254,7 @@ body {
   height: 100%;
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 50% 38%, #5a3d28 0%, transparent 42%),
-    radial-gradient(ellipse at 18% 80%, #3a1c22 0%, transparent 48%),
-    radial-gradient(ellipse at 88% 18%, #2c2418 0%, transparent 40%),
-    #14100c;
-}
-
-.uma-stage-art {
-  position: absolute;
-  inset: 0;
-}
-
-.uma-stage-art-glow {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(40px);
-}
-
-.uma-stage-art-glow--a {
-  width: 42vw;
-  height: 42vw;
-  left: 50%;
-  top: 28%;
-  transform: translate(-50%, -50%);
-  background: color-mix(in srgb, var(--color-gold) 38%, transparent);
-  opacity: 0.45;
-}
-
-.uma-stage-art-glow--b {
-  width: 28vw;
-  height: 18vw;
-  left: 12%;
-  bottom: 12%;
-  background: color-mix(in srgb, var(--color-burgundy) 50%, transparent);
-  opacity: 0.4;
-}
-
-.uma-stage-art-glow--c {
-  width: 22vw;
-  height: 22vw;
-  right: 10%;
-  top: 18%;
-  background: color-mix(in srgb, var(--color-champagne) 35%, transparent);
-  opacity: 0.35;
-}
-
-.uma-stage-art-bokeh {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 18% 30%, rgba(220, 199, 160, 0.35) 0 4px, transparent 5px),
-    radial-gradient(circle at 72% 22%, rgba(196, 165, 116, 0.28) 0 6px, transparent 7px),
-    radial-gradient(circle at 40% 70%, rgba(245, 240, 227, 0.18) 0 3px, transparent 4px),
-    radial-gradient(circle at 82% 64%, rgba(196, 165, 116, 0.22) 0 5px, transparent 6px),
-    radial-gradient(circle at 28% 52%, rgba(220, 199, 160, 0.2) 0 3px, transparent 4px);
-}
-
-.uma-stage-art-arch {
-  position: absolute;
-  left: 50%;
-  bottom: -6%;
-  width: min(72vw, 42rem);
-  height: 88%;
-  transform: translateX(-50%);
-  color: color-mix(in srgb, var(--color-gold) 55%, transparent);
-  opacity: 0.55;
-}
-
-.uma-ambient--stage .uma-ambient-inner .uma-cinematic-media,
-.uma-ambient--stage .uma-cinematic-fallback {
-  opacity: 1;
-}
-
-.uma-ambient--stage .uma-ambient-wash {
-  background:
-    radial-gradient(ellipse at center, transparent 18%, rgba(18, 14, 12, 0.35) 100%),
-    linear-gradient(180deg, rgba(18, 14, 12, 0.12) 0%, rgba(18, 14, 12, 0.22) 48%, rgba(18, 14, 12, 0.62) 100%);
-}
-
-.uma-hero--stage::before {
-  background:
-    radial-gradient(ellipse at center, transparent 42%, rgba(18, 14, 12, 0.28) 100%),
-    linear-gradient(180deg, rgba(18, 14, 12, 0.04) 0%, rgba(18, 14, 12, 0.08) 52%, rgba(18, 14, 12, 0.55) 100%);
+  background: #14100c;
 }
 
 .uma-filmstrip-section::before,
@@ -374,20 +292,20 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(11, 10, 9, 0.42), rgba(11, 10, 9, 0.18) 38%, rgba(11, 10, 9, 0.82)),
-    linear-gradient(90deg, rgba(11, 10, 9, 0.28), transparent 40%);
+    linear-gradient(180deg, rgba(11, 10, 9, 0.22), rgba(11, 10, 9, 0.08) 38%, rgba(11, 10, 9, 0.55)),
+    linear-gradient(90deg, rgba(11, 10, 9, 0.12), transparent 40%);
 }
 
 .uma-cinematic-overlay--hero {
   background:
-    radial-gradient(ellipse at center, transparent 32%, rgba(11, 10, 9, 0.52) 100%),
-    linear-gradient(180deg, rgba(11, 10, 9, 0.4) 0%, rgba(11, 10, 9, 0.18) 42%, rgba(11, 10, 9, 0.9) 100%);
+    radial-gradient(ellipse at center, transparent 42%, rgba(11, 10, 9, 0.28) 100%),
+    linear-gradient(180deg, rgba(11, 10, 9, 0.18) 0%, rgba(11, 10, 9, 0.08) 42%, rgba(11, 10, 9, 0.62) 100%);
 }
 
 .uma-cinematic-overlay--quote {
   background:
-    radial-gradient(ellipse at center, rgba(11, 10, 9, 0.22) 0%, rgba(11, 10, 9, 0.78) 62%, rgba(11, 10, 9, 0.92) 100%),
-    linear-gradient(180deg, rgba(11, 10, 9, 0.42), rgba(11, 10, 9, 0.55) 40%, rgba(11, 10, 9, 0.82));
+    radial-gradient(ellipse at center, rgba(11, 10, 9, 0.12) 0%, rgba(11, 10, 9, 0.52) 62%, rgba(11, 10, 9, 0.72) 100%),
+    linear-gradient(180deg, rgba(11, 10, 9, 0.22), rgba(11, 10, 9, 0.35) 40%, rgba(11, 10, 9, 0.62));
 }
 
 .uma-cinematic-overlay--ambient {
@@ -1612,15 +1530,15 @@ body.uma-nav-open {
 }
 
 .uma-ambient-inner .uma-cinematic-media {
-  opacity: 0.72;
+  opacity: 0.92;
 }
 
 .uma-ambient-wash {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at center, transparent 22%, rgba(18, 14, 12, 0.55) 100%),
-    linear-gradient(180deg, rgba(18, 14, 12, 0.22) 0%, rgba(18, 14, 12, 0.42) 46%, rgba(18, 14, 12, 0.78) 100%);
+    radial-gradient(ellipse at center, transparent 32%, rgba(18, 14, 12, 0.38) 100%),
+    linear-gradient(180deg, rgba(18, 14, 12, 0.12) 0%, rgba(18, 14, 12, 0.18) 46%, rgba(18, 14, 12, 0.58) 100%);
 }
 
 .uma-hero--window {
@@ -1633,8 +1551,8 @@ body.uma-nav-open {
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(ellipse at center, transparent 36%, rgba(18, 14, 12, 0.42) 100%),
-    linear-gradient(180deg, rgba(18, 14, 12, 0.1) 0%, rgba(18, 14, 12, 0.08) 48%, rgba(18, 14, 12, 0.78) 100%);
+    radial-gradient(ellipse at center, transparent 48%, rgba(18, 14, 12, 0.22) 100%),
+    linear-gradient(180deg, rgba(18, 14, 12, 0.08) 0%, rgba(18, 14, 12, 0.05) 48%, rgba(18, 14, 12, 0.55) 100%);
 }
 
 .uma-hero-statement {
@@ -1779,9 +1697,40 @@ body.uma-nav-open {
 }
 
 .uma-services-cine {
-  max-width: 62rem;
-  margin-inline: auto;
+  position: relative;
+  isolation: isolate;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
   padding: 7.5rem 1.5rem 6rem;
+}
+
+.uma-services-cine-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.uma-services-cine-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uma-services-cine-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(18, 14, 12, 0.78) 0%, rgba(18, 14, 12, 0.42) 48%, rgba(18, 14, 12, 0.22) 100%),
+    linear-gradient(180deg, rgba(18, 14, 12, 0.2), rgba(18, 14, 12, 0.45));
+}
+
+.uma-services-cine-copy {
+  position: relative;
+  z-index: 1;
+  width: min(62rem, 100%);
+  margin-inline: auto;
 }
 
 .uma-service-aura {

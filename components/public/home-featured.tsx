@@ -24,18 +24,16 @@ export function HomeFeatured({
         <article className="uma-featured-story">
           <div className="uma-featured-story-media">
             <HoverZoom className="h-full w-full">
-              {covers[event.id] ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={covers[event.id] || ""}
-                  alt={event.title}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-                <div className="uma-reel-unexposed h-full" />
-              )}
+                      {covers[event.id] ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={covers[event.id] || ""}
+                          alt={event.title}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : null}
             </HoverZoom>
           </div>
           <div className="uma-featured-story-copy">

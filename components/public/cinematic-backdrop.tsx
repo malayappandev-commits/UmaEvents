@@ -2,11 +2,11 @@
 
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { CinematicStageArt } from "@/components/public/cinematic-stage-art";
+import { DESIGN_HERO_POSTER } from "@/lib/public/design-visuals";
 
 /**
- * Reusable cinematic media layer. Video/image URLs come from existing
- * studio_settings (hero_video_url / hero_image_url) — never hardcoded stock.
+ * Cinematic media layer. Prefers CMS URLs; falls back to supplied event stills,
+ * never abstract placeholder art.
  */
 export function CinematicBackdrop({
   video,
@@ -25,6 +25,8 @@ export function CinematicBackdrop({
   children?: ReactNode;
   eager?: boolean;
 }) {
+  const still = image || DESIGN_HERO_POSTER;
+
   return (
     <div className={cn("uma-cinematic-stage", className)}>
       {video ? (
@@ -34,23 +36,19 @@ export function CinematicBackdrop({
           muted
           loop
           playsInline
-          poster={image || undefined}
+          poster={still}
         >
           <source src={video} />
         </video>
-      ) : image ? (
+      ) : (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={image}
+          src={still}
           alt={alt}
           className="uma-cinematic-media"
           loading={eager ? "eager" : "lazy"}
           decoding="async"
         />
-      ) : (
-        <div className="uma-cinematic-fallback">
-          <CinematicStageArt />
-        </div>
       )}
       <div className={cn("uma-cinematic-overlay", overlay !== "default" && `uma-cinematic-overlay--${overlay}`)} />
       <div className="noise-overlay" />

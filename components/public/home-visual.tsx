@@ -10,11 +10,9 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export function HomeVisual({
   headline,
   supporting,
-  hasMedia,
 }: {
   headline: string;
   supporting: string;
-  hasMedia?: boolean;
 }) {
   const reduce = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
@@ -50,7 +48,7 @@ export function HomeVisual({
   });
 
   return (
-    <section ref={sectionRef} className={hasMedia ? "uma-hero uma-hero--window uma-surface-dark" : "uma-hero uma-hero--window uma-hero--stage uma-surface-dark"}>
+    <section ref={sectionRef} className="uma-hero uma-hero--window uma-surface-dark">
       <motion.div
         className="uma-hero-copy uma-hero-copy--center"
         style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}

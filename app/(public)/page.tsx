@@ -20,6 +20,14 @@ import { FadeReveal, Reveal } from "@/components/public/motion";
 import { Eyebrow } from "@/components/public/ui";
 import { BRAND_TAGLINE } from "@/lib/public/nav";
 import { whatsappHref } from "@/lib/utils";
+import {
+  cmsOrVisual,
+  DESIGN_CRAFT_STILL,
+  DESIGN_FILM,
+  DESIGN_HERO_POSTER,
+  DESIGN_QUOTE_STILL,
+  DESIGN_STILLS,
+} from "@/lib/public/design-visuals";
 
 export default async function HomePage() {
   let settings = null;
@@ -42,32 +50,35 @@ export default async function HomePage() {
 
   const featured = projects.filter((p) => p.featured);
   const reelSource = projects.slice(0, 8);
-  const reel: Array<{
+  const cmsReel: Array<{
     id: string;
     title: string;
-    slug: string;
-    eventType: string;
-    coverUrl: string | null;
+    href: string;
+    eventType?: string | null;
+    coverUrl: string;
   }> = [];
 
   for (const p of reelSource) {
-    reel.push({
-      id: p.id,
-      title: p.title,
-      slug: p.slug,
-      eventType: p.event_type,
-      coverUrl: covers[p.id] ?? null,
-    });
+    const cover = covers[p.id];
+    if (cover) {
+      cmsReel.push({
+        id: p.id,
+        title: p.title,
+        href: `/portfolio/${p.slug}`,
+        eventType: p.event_type,
+        coverUrl: cover,
+      });
+    }
     try {
       const extras = await getProjectMedia(p.id);
       const extra = extras.find((m) => m.type === "PHOTO" && m.id !== p.cover_media_id);
       if (extra) {
         const url = await signMediaUrl(extra.thumbnail_url || extra.storage_path || extra.public_url);
         if (url) {
-          reel.push({
+          cmsReel.push({
             id: extra.id,
             title: p.title,
-            slug: p.slug,
+            href: `/portfolio/${p.slug}`,
             eventType: p.event_type,
             coverUrl: url,
           });
@@ -78,11 +89,26 @@ export default async function HomePage() {
     }
   }
 
+  const reel =
+    cmsReel.length > 0
+      ? cmsReel
+      : DESIGN_STILLS.map((still, i) => ({
+          id: `visual-${i}`,
+          title: still.label,
+          href: "/portfolio",
+          eventType: null,
+          coverUrl: still.src,
+        }));
+
   const quoteImage =
     (featured[0] && covers[featured[0].id]) ||
     (reelSource[0] && covers[reelSource[0].id]) ||
-    settings?.hero_image_url ||
-    null;
+    cmsOrVisual(settings?.hero_image_url, DESIGN_QUOTE_STILL);
+
+  const film = settings?.hero_video_url || (!settings?.hero_image_url ? DESIGN_FILM : null);
+  const poster = cmsOrVisual(settings?.hero_image_url, DESIGN_HERO_POSTER);
+  const craftStill = services.find((s) => s.image_url)?.image_url || DESIGN_CRAFT_STILL;
+
   const eventTypes = Array.from(
     new Set([
       ...services.map((s) => s.title).filter(Boolean),
@@ -106,13 +132,9 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdLocalBusiness(settings)) }}
       />
 
-      <AmbientFilm video={settings?.hero_video_url} image={settings?.hero_image_url} />
+      <AmbientFilm video={film} image={poster} />
 
-      <HomeVisual
-        headline={headline}
-        supporting={supporting}
-        hasMedia={Boolean(settings?.hero_video_url || settings?.hero_image_url)}
-      />
+      <HomeVisual headline={headline} supporting={supporting} />
       <OrganicDivider />
 
       <section className="uma-statement uma-surface-dark">
@@ -125,7 +147,7 @@ export default async function HomePage() {
 
       <HomeQuote eyebrow="Uma Events" text={quoteText} image={quoteImage} />
 
-      <HomeServices services={services} />
+      <HomeServices services={services} backdrop={craftStill} />
 
       <HomeFeatured events={featured} covers={covers} />
 
