@@ -20,7 +20,7 @@ export function CinematicBackdrop({
   image?: string | null;
   alt?: string;
   className?: string;
-  overlay?: "default" | "hero" | "quote";
+  overlay?: "default" | "hero" | "quote" | "ambient";
   children?: ReactNode;
   eager?: boolean;
 }) {

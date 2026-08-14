@@ -278,6 +278,10 @@ body {
     linear-gradient(180deg, rgba(11, 10, 9, 0.42), rgba(11, 10, 9, 0.55) 40%, rgba(11, 10, 9, 0.82));
 }
 
+.uma-cinematic-overlay--ambient {
+  background: transparent;
+}
+
 .uma-hero {
   position: relative;
   height: 100svh;
@@ -756,6 +760,8 @@ body.uma-nav-open {
 
 /* Footer */
 .uma-footer {
+  position: relative;
+  z-index: 2;
   background: var(--color-ink);
   color: var(--color-ivory);
 }
@@ -1464,6 +1470,359 @@ body.uma-nav-open {
     grid-template-columns: 0.9fr 1.1fr;
     gap: 4rem;
     align-items: start;
+  }
+}
+
+/* Homepage cinematic film language */
+.uma-public:has(.uma-home-cine) {
+  background: #120e0c;
+}
+
+.uma-home-cine {
+  position: relative;
+  z-index: 1;
+  color: var(--color-ivory);
+  background: transparent;
+}
+
+.uma-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #120e0c;
+}
+
+.uma-ambient-inner {
+  position: absolute;
+  inset: -4%;
+}
+
+.uma-ambient-inner .uma-cinematic-media {
+  opacity: 0.72;
+}
+
+.uma-ambient-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 22%, rgba(18, 14, 12, 0.55) 100%),
+    linear-gradient(180deg, rgba(18, 14, 12, 0.22) 0%, rgba(18, 14, 12, 0.42) 46%, rgba(18, 14, 12, 0.78) 100%);
+}
+
+.uma-hero--window {
+  background: transparent;
+}
+
+.uma-hero--window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at center, transparent 36%, rgba(18, 14, 12, 0.42) 100%),
+    linear-gradient(180deg, rgba(18, 14, 12, 0.1) 0%, rgba(18, 14, 12, 0.08) 48%, rgba(18, 14, 12, 0.78) 100%);
+}
+
+.uma-hero-statement {
+  max-width: 18ch;
+  margin-inline: auto;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.35rem, 7.2vw, 5.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+.uma-organic-divider {
+  position: relative;
+  z-index: 1;
+  height: 5.5rem;
+  margin-top: -1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.uma-organic-divider svg {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: 100%;
+  fill: #120e0c;
+}
+
+.uma-statement {
+  position: relative;
+  z-index: 1;
+  padding: 6.5rem 1.5rem 5rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .uma-statement {
+    padding: 8.5rem 2.5rem 6rem;
+  }
+}
+
+.uma-statement p {
+  max-width: 46rem;
+  margin-inline: auto;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.55rem, 3.2vw, 2.45rem);
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.uma-filmstrip-section,
+.uma-services-cine,
+.uma-featured-cine,
+.uma-final-cta {
+  position: relative;
+  z-index: 1;
+}
+
+.uma-filmstrip-section {
+  padding: 2.5rem 0 6.5rem;
+}
+
+.uma-filmstrip-head {
+  text-align: center;
+  padding: 0 1.5rem 2.75rem;
+}
+
+.uma-filmstrip-head h2 {
+  margin-top: 0.85rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.85rem, 4vw, 2.85rem);
+}
+
+.uma-reel {
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .uma-reel {
+    padding-inline: 2.5rem;
+  }
+}
+
+.uma-reel-frame {
+  border-radius: 56px 8px 56px 8px;
+  box-shadow: none;
+}
+
+.uma-reel-frame:nth-child(even) {
+  border-radius: 8px 56px 8px 56px;
+}
+
+.uma-reel-frame .uma-hover-zoom:hover img {
+  transform: scale(1.07);
+}
+
+.uma-reel-unexposed {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, #4a382c 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, color-mix(in srgb, var(--color-burgundy) 35%, transparent), transparent 48%),
+    linear-gradient(160deg, #2a221c, #0d0b0a);
+}
+
+.uma-reel-hint a {
+  color: var(--color-gold);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.uma-quote-band {
+  min-height: 78vh;
+}
+
+.uma-quote--ivory {
+  font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+  line-height: 1.4;
+}
+
+.uma-services-cine {
+  max-width: 62rem;
+  margin-inline: auto;
+  padding: 7.5rem 1.5rem 6rem;
+}
+
+.uma-service-aura {
+  position: absolute;
+  inset: 12% auto 12% -1.5rem;
+  width: 6rem;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-gold) 28%, transparent), transparent 70%);
+  transition: opacity 0.6s ease;
+}
+
+.uma-service-line:hover .uma-service-aura,
+.uma-service-await .uma-service-aura {
+  opacity: 0.7;
+}
+
+.uma-service-line[data-kind="wedding"] .uma-service-aura {
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-burgundy) 40%, transparent), transparent 70%);
+}
+
+.uma-service-line[data-kind="sangeet"] .uma-service-aura,
+.uma-service-line[data-kind="mehendi"] .uma-service-aura {
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-gold) 45%, transparent), transparent 70%);
+}
+
+.uma-service-line[data-kind="birthday"] .uma-service-aura,
+.uma-service-line[data-kind="kitty"] .uma-service-aura,
+.uma-service-line[data-kind="babyshower"] .uma-service-aura {
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-champagne) 40%, transparent), transparent 70%);
+}
+
+.uma-service-line[data-kind="corporate"] .uma-service-aura {
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-ivory) 18%, transparent), transparent 70%);
+}
+
+.uma-home-cine .uma-service-line {
+  color: var(--color-ivory);
+}
+
+.uma-home-cine .uma-service-title {
+  color: var(--color-ivory);
+}
+
+.uma-home-cine .uma-service-desc {
+  color: color-mix(in srgb, var(--color-ivory) 62%, transparent);
+}
+
+.uma-service-preview--slot {
+  display: none;
+  background: linear-gradient(160deg, #3a2f26, #120e0c);
+}
+
+@media (min-width: 900px) {
+  .uma-service-preview--slot {
+    display: block;
+    opacity: 0.35;
+  }
+
+  .uma-service-line:hover .uma-service-preview--slot {
+    opacity: 0.85;
+  }
+}
+
+.uma-service-await {
+  position: relative;
+  padding: 2.5rem 0 1rem;
+  text-align: center;
+  color: color-mix(in srgb, var(--color-ivory) 62%, transparent);
+}
+
+.uma-cine-more {
+  margin-top: 1.75rem;
+  text-align: center;
+}
+
+.uma-cine-more a {
+  color: var(--color-gold);
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.uma-featured-cine {
+  padding: 2rem 1.5rem 6rem;
+}
+
+.uma-featured-story {
+  display: grid;
+  gap: 1.75rem;
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 900px) {
+  .uma-featured-story {
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+}
+
+.uma-featured-story-media {
+  min-height: 70vh;
+  overflow: hidden;
+  border-radius: 48% 48% 18px 18px / 14% 14% 18px 18px;
+  background: #0d0b0a;
+}
+
+.uma-featured-story-copy .uma-featured-title {
+  color: var(--color-ivory);
+}
+
+.uma-final-cta {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1.5rem 5rem;
+  text-align: center;
+}
+
+.uma-final-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--color-gold) 7%, transparent) 0%, transparent 58%);
+}
+
+.uma-final-cta-inner {
+  position: relative;
+  z-index: 1;
+  width: min(44rem, 100%);
+}
+
+.uma-final-cta h2 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.1rem, 5.2vw, 3.9rem);
+  line-height: 1.12;
+}
+
+.uma-contact-lead--center {
+  margin-inline: auto;
+}
+
+.uma-contact-secondary--center {
+  justify-content: center;
+  margin-bottom: 2.25rem;
+}
+
+.uma-final-form {
+  text-align: left;
+}
+
+.uma-chapter--film {
+  background: transparent;
+  color: var(--color-ivory);
+}
+
+@media (max-width: 480px) {
+  .uma-hero-statement {
+    max-width: 20ch;
+    padding-inline: 0.2rem;
+  }
+
+  .uma-featured-story-media {
+    min-height: 58vh;
+    border-radius: 36% 36% 12px 12px / 12% 12% 12px 12px;
   }
 }
 

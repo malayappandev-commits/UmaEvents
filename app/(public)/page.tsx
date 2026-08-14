@@ -1,5 +1,6 @@
 import {
   getCoverMap,
+  getProjectMedia,
   getPublishedProjects,
   getPublishedServices,
   getSettings,
@@ -8,21 +9,17 @@ import {
 import { jsonLdLocalBusiness } from "@/lib/seo";
 import { EnquiryForm } from "@/components/public/enquiry-form";
 import { HomeVisual } from "@/components/public/home-visual";
+import { AmbientFilm } from "@/components/public/ambient-film";
+import { OrganicDivider } from "@/components/public/organic-divider";
 import { EventReel } from "@/components/public/event-reel";
 import { HomeServices } from "@/components/public/home-services";
 import { HomeFeatured } from "@/components/public/home-featured";
 import { HomeQuote } from "@/components/public/home-quote";
 import { HomeTestimonials } from "@/components/public/home-testimonials";
-import { FadeReveal, GoldLineReveal, Reveal } from "@/components/public/motion";
-import { Eyebrow, RadialGlow, UmaButton } from "@/components/public/ui";
+import { FadeReveal, Reveal } from "@/components/public/motion";
+import { Eyebrow } from "@/components/public/ui";
 import { BRAND_TAGLINE } from "@/lib/public/nav";
 import { whatsappHref } from "@/lib/utils";
-
-const PRINCIPLES = [
-  { roman: "I", title: "Plan", copy: "Every gathering begins with listening — the people, the place, the feeling of the day." },
-  { roman: "II", title: "Create", copy: "Details, sequence, and atmosphere are composed together, not added as afterthoughts." },
-  { roman: "III", title: "Celebrate", copy: "When the hour arrives, the work is to hold the day so it can be lived, not managed." },
-];
 
 export default async function HomePage() {
   let settings = null;
@@ -44,8 +41,48 @@ export default async function HomePage() {
   }
 
   const featured = projects.filter((p) => p.featured);
-  const reel = projects.slice(0, 8);
-  const quoteImage = (featured[0] && covers[featured[0].id]) || settings?.hero_image_url || null;
+  const reelSource = projects.slice(0, 8);
+  const reel: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    eventType: string;
+    coverUrl: string | null;
+  }> = [];
+
+  for (const p of reelSource) {
+    reel.push({
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      eventType: p.event_type,
+      coverUrl: covers[p.id] ?? null,
+    });
+    try {
+      const extras = await getProjectMedia(p.id);
+      const extra = extras.find((m) => m.type === "PHOTO" && m.id !== p.cover_media_id);
+      if (extra) {
+        const url = await signMediaUrl(extra.thumbnail_url || extra.storage_path || extra.public_url);
+        if (url) {
+          reel.push({
+            id: extra.id,
+            title: p.title,
+            slug: p.slug,
+            eventType: p.event_type,
+            coverUrl: url,
+          });
+        }
+      }
+    } catch {
+      /* keep cover-only frame */
+    }
+  }
+
+  const quoteImage =
+    (featured[0] && covers[featured[0].id]) ||
+    (reelSource[0] && covers[reelSource[0].id]) ||
+    settings?.hero_image_url ||
+    null;
   const eventTypes = Array.from(
     new Set([
       ...services.map((s) => s.title).filter(Boolean),
@@ -56,81 +93,31 @@ export default async function HomePage() {
   const supporting =
     settings?.hero_subheadline ||
     settings?.about_intro ||
-    "From intimate celebrations to unforgettable occasions, we bring together thoughtful planning, beautiful details and seamless execution.";
-  const line = settings?.tagline || settings?.hero_headline || BRAND_TAGLINE;
-  const manifestoStatement =
-    settings?.hero_headline || "Every celebration has a story. We help you hold it with care.";
-  const manifestoCopy =
-    settings?.about_intro ||
-    "Uma Events is an event management and planning studio in Vijayawada. The work is atmosphere — space, sequence, and the quiet details that make a day feel considered.";
-  const quoteText = settings?.tagline || settings?.hero_headline || line;
+    "Uma Events composes weddings and milestone celebrations so the day plays back in memory exactly as it felt in person.";
+  const headline = settings?.hero_headline || "Every celebration has a story worth holding.";
+  const statement = settings?.about_intro || settings?.tagline || BRAND_TAGLINE;
+  const quoteText = settings?.tagline || settings?.hero_headline || BRAND_TAGLINE;
   const whatsapp = whatsappHref(settings?.phone);
 
   return (
-    <>
+    <div className="uma-home-cine">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdLocalBusiness(settings)) }}
       />
 
-      <HomeVisual
-        line={line}
-        supporting={supporting}
-        image={settings?.hero_image_url}
-        video={settings?.hero_video_url}
-      />
+      <AmbientFilm video={settings?.hero_video_url} image={settings?.hero_image_url} />
 
-      <section className="uma-chapter uma-chapter--ivory uma-manifesto">
-        <RadialGlow className="-left-24 top-8" />
-        <div className="uma-chapter-inner uma-chapter-inner--narrow">
-          <div className="uma-manifesto-spread">
-            <FadeReveal>
-              <Eyebrow>Welcome</Eyebrow>
-            </FadeReveal>
-            <Reveal delay={0.12} duration={1} y={28}>
-              <h2 className="uma-manifesto-title">{manifestoStatement}</h2>
-            </Reveal>
-            <GoldLineReveal className="mx-auto mt-10 max-w-[9rem]" delay={0.28} />
-            <Reveal delay={0.36}>
-              <p className="uma-manifesto-copy">{manifestoCopy}</p>
-            </Reveal>
-            <Reveal delay={0.44}>
-              <UmaButton href="/about" variant="ghost" className="mt-10">
-                About Us
-              </UmaButton>
-            </Reveal>
-          </div>
-        </div>
+      <HomeVisual headline={headline} supporting={supporting} />
+      <OrganicDivider />
+
+      <section className="uma-statement uma-surface-dark">
+        <Reveal duration={1} y={28}>
+          <p>{statement}</p>
+        </Reveal>
       </section>
 
-      <section className="uma-chapter uma-chapter--ivory uma-chapter--tight">
-        <div className="uma-chapter-inner">
-          <Reveal className="uma-chapter-head uma-chapter-head--center">
-            <Eyebrow>The studio</Eyebrow>
-            <p className="uma-trust-line">Thoughtful planning. Beautiful details. Seamless celebrations.</p>
-          </Reveal>
-          <div className="uma-trust-grid">
-            {PRINCIPLES.map((item, i) => (
-              <Reveal key={item.title} delay={i * 0.08} className="uma-trust-item">
-                <p className="uma-service-roman">{item.roman}</p>
-                <h3>{item.title}</h3>
-                <span className="uma-trust-rule" aria-hidden />
-                <p>{item.copy}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <EventReel
-        frames={reel.map((p) => ({
-          id: p.id,
-          title: p.title,
-          slug: p.slug,
-          eventType: p.event_type,
-          coverUrl: covers[p.id] ?? null,
-        }))}
-      />
+      <EventReel frames={reel} />
 
       <HomeQuote eyebrow="Uma Events" text={quoteText} image={quoteImage} />
 
@@ -138,55 +125,37 @@ export default async function HomePage() {
 
       <HomeFeatured events={featured} covers={covers} />
 
-      <section className="uma-chapter uma-chapter--ivory">
-        <div className="uma-chapter-inner uma-chapter-inner--narrow">
-          <div className="uma-why-spread">
-            <FadeReveal>
-              <Eyebrow>Approach</Eyebrow>
-            </FadeReveal>
-            <Reveal delay={0.1} duration={1} y={28}>
-              <h2 className="uma-why-statement">Why Uma Events</h2>
-            </Reveal>
-            <GoldLineReveal className="mx-auto mt-10 max-w-[8rem]" delay={0.24} />
-            <Reveal delay={0.32}>
-              <p className="uma-why-lead uma-why-lead--center">
-                {settings?.about_intro ||
-                  settings?.tagline ||
-                  "Presence in Vijayawada. A considered process. Planning and production held as one."}
-              </p>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
       <HomeTestimonials items={[]} />
 
-      <section className="uma-chapter uma-chapter--ink uma-contact-band">
-        <div className="uma-chapter-inner uma-contact-grid">
+      <section className="uma-final-cta uma-surface-dark">
+        <div className="uma-final-cta-inner">
           <FadeReveal>
             <Eyebrow className="uma-eyebrow--gold">Begin</Eyebrow>
-            <h2 className="uma-section-title uma-contact-title">Let&apos;s create something worth remembering.</h2>
-            <GoldLineReveal className="mt-8 max-w-[7rem]" delay={0.12} />
-            <p className="uma-contact-lead">
-              Share a few details. There are no packages to choose from — every gathering is planned on its own terms.
+            <h2>Let&apos;s create something worth remembering.</h2>
+            <p className="uma-contact-lead uma-contact-lead--center">
+              Share a few details. Every gathering is planned on its own terms.
             </p>
-            <div className="uma-contact-secondary">
+            <div className="uma-contact-secondary uma-contact-secondary--center">
               {settings?.phone ? (
-                <a href={`tel:${settings.phone.replace(/\s+/g, "")}`}>Call {settings.phone}</a>
-              ) : null}
-              {whatsapp ? (
-                <a href={whatsapp} target="_blank" rel="noreferrer">
-                  WhatsApp
+                <a className="uma-btn uma-btn-primary" href={`tel:${settings.phone.replace(/\s+/g, "")}`}>
+                  <span>Call {settings.phone}</span>
                 </a>
               ) : null}
-              {settings?.contact_email ? <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a> : null}
+              {whatsapp ? (
+                <a className="uma-btn uma-btn-secondary" href={whatsapp} target="_blank" rel="noreferrer">
+                  <span>WhatsApp</span>
+                </a>
+              ) : null}
+              {settings?.contact_email ? (
+                <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
+              ) : null}
             </div>
           </FadeReveal>
-          <Reveal delay={0.1}>
+          <Reveal delay={0.08} className="uma-final-form">
             <EnquiryForm eventTypes={eventTypes} tone="dark" />
           </Reveal>
         </div>
       </section>
-    </>
+    </div>
   );
 }

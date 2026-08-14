@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { HoverZoom, Reveal } from "@/components/public/motion";
-import { Eyebrow, UmaButton } from "@/components/public/ui";
+import { Eyebrow } from "@/components/public/ui";
 
 export type ReelFrame = {
   id: string;
@@ -71,61 +71,53 @@ export function EventReel({ frames }: { frames: ReelFrame[] }) {
     };
   }, [frames.length]);
 
-  const scrollBy = (dir: number) => {
-    const el = scroller.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * Math.min(el.clientWidth * 0.72, 420), behavior: "smooth" });
-  };
+  const show = frames.length > 0;
 
   return (
-    <section className="uma-chapter uma-chapter--ink">
-      <div className="uma-chapter-inner">
-        <Reveal className="uma-chapter-head uma-chapter-head--center">
-          <Eyebrow className="uma-eyebrow--gold">The reel</Eyebrow>
-          <h2 className="uma-section-title">A glimpse of recent work</h2>
-        </Reveal>
+    <section id="reel" className="uma-filmstrip-section uma-surface-dark">
+      <Reveal className="uma-filmstrip-head">
+        <Eyebrow className="uma-eyebrow--gold">The Reel</Eyebrow>
+        <h2>A glimpse of recent work</h2>
+      </Reveal>
 
-        {frames.length ? (
+      <div ref={scroller} className="uma-reel" tabIndex={0} aria-label="Event filmstrip">
+        {show
+          ? frames.map((frame, i) => (
+              <Link key={frame.id} href={`/portfolio/${frame.slug}`} className="uma-reel-frame">
+                <HoverZoom className="uma-reel-media">
+                  {frame.coverUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={frame.coverUrl} alt={frame.title} loading="lazy" decoding="async" />
+                  ) : (
+                    <div className="uma-reel-unexposed" />
+                  )}
+                </HoverZoom>
+                <div className="uma-reel-cap">
+                  <p className="uma-reel-num">{String(i + 1).padStart(2, "0")}</p>
+                  {frame.eventType ? <p className="uma-reel-type">{frame.eventType}</p> : null}
+                  <h3>{frame.title}</h3>
+                </div>
+              </Link>
+            ))
+          : [0, 1, 2, 3].map((i) => (
+              <div key={i} className="uma-reel-frame uma-reel-frame--await" aria-hidden>
+                <div className="uma-reel-unexposed" />
+                <div className="uma-reel-cap">
+                  <p className="uma-reel-num">{String(i + 1).padStart(2, "0")}</p>
+                </div>
+              </div>
+            ))}
+      </div>
+      <p className="uma-reel-hint">
+        {show ? (
           <>
-            <div className="uma-reel-toolbar">
-              <button type="button" className="uma-reel-arrow" onClick={() => scrollBy(-1)} aria-label="Previous events">
-                ←
-              </button>
-              <button type="button" className="uma-reel-arrow" onClick={() => scrollBy(1)} aria-label="Next events">
-                →
-              </button>
-            </div>
-            <div ref={scroller} className="uma-reel" tabIndex={0} aria-label="Event filmstrip">
-              {frames.map((frame, i) => (
-                <Link key={frame.id} href={`/portfolio/${frame.slug}`} className="uma-reel-frame">
-                  <HoverZoom className="uma-reel-media">
-                    {frame.coverUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={frame.coverUrl} alt={frame.title} loading="lazy" decoding="async" />
-                    ) : (
-                      <div className="uma-reel-fallback" />
-                    )}
-                  </HoverZoom>
-                  <div className="uma-reel-cap">
-                    <p className="uma-reel-num">{String(i + 1).padStart(2, "0")}</p>
-                    <p className="uma-reel-type">{frame.eventType}</p>
-                    <h3>{frame.title}</h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            <p className="uma-reel-hint">Swipe or drag to explore</p>
+            Drag to explore ·{" "}
+            <Link href="/portfolio">see full gallery →</Link>
           </>
         ) : (
-          <p className="uma-empty uma-empty--on-ink">Moments we&apos;re proud to share will appear here.</p>
+          "Published celebrations will fill this reel."
         )}
-
-        <div className="uma-chapter-foot">
-          <UmaButton href="/portfolio" variant="secondary">
-            View Gallery
-          </UmaButton>
-        </div>
-      </div>
+      </p>
     </section>
   );
 }
