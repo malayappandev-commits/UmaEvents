@@ -7,28 +7,20 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { BRAND_NAME, PUBLIC_NAV } from "@/lib/public/nav";
 
-function detectSurface(pathname: string): "dark" | "light" {
-  const header = document.querySelector(".uma-nav");
-  const navH = header instanceof HTMLElement ? header.offsetHeight : 72;
-  const x = Math.min(Math.max(window.innerWidth / 2, 24), window.innerWidth - 24);
-  const y = Math.min(navH + 8, window.innerHeight - 4);
-  const stack = document.elementsFromPoint(x, y);
-
-  for (const el of stack) {
-    if (!(el instanceof Element)) continue;
-    if (el.closest(".uma-nav, .uma-intro")) continue;
-
-    const dark = el.closest(
+function isDarkSurface(el: Element | null) {
+  if (!el) return false;
+  return Boolean(
+    el.closest(
       ".uma-hero, .uma-chapter--ink, .uma-quote-band, .uma-footer, .bg-ink, .uma-surface-dark",
-    );
-    if (dark) return "dark";
+    ),
+  );
+}
 
-    const light = el.closest(".uma-chapter--ivory, .uma-chapter--cream, .uma-page, .bg-ivory, .bg-cream");
-    if (light) return "light";
-  }
-
-  if (pathname === "/" && window.scrollY < 80) return "dark";
-  return "light";
+function isLightSurface(el: Element | null) {
+  if (!el) return false;
+  return Boolean(
+    el.closest(".uma-chapter--ivory, .uma-chapter--cream, .uma-page, .bg-ivory, .bg-cream"),
+  );
 }
 
 export function SiteNav() {
@@ -40,23 +32,57 @@ export function SiteNav() {
 
   useEffect(() => {
     let frame = 0;
-    const update = () => {
-      setScrolled(window.scrollY > 24);
-      setSurface(detectSurface(pathname));
+
+    const probe = () => {
+      setScrolled(window.scrollY > 20);
+      const header = document.querySelector(".uma-nav");
+      const navH = header instanceof HTMLElement ? header.offsetHeight : 72;
+      const x = Math.min(Math.max(window.innerWidth * 0.5, 32), window.innerWidth - 32);
+      const y = Math.min(navH + 12, window.innerHeight - 8);
+      const stack = document.elementsFromPoint(x, y);
+      for (const el of stack) {
+        if (!(el instanceof Element)) continue;
+        if (el.closest(".uma-nav, .uma-intro, .uma-nav-drawer")) continue;
+        if (isDarkSurface(el)) {
+          setSurface("dark");
+          return;
+        }
+        if (isLightSurface(el)) {
+          setSurface("light");
+          return;
+        }
+      }
+      setSurface(pathname === "/" && window.scrollY < 100 ? "dark" : "light");
     };
+
     const onScroll = () => {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
         frame = 0;
-        update();
+        probe();
       });
     };
-    update();
-    const later = window.setTimeout(update, 180);
+
+    probe();
+    const t1 = window.setTimeout(probe, 80);
+    const t2 = window.setTimeout(probe, 280);
+
+    const nodes = document.querySelectorAll(
+      ".uma-hero, .uma-chapter, .uma-quote-band, .uma-page, .uma-footer, .uma-surface-dark",
+    );
+    const io = new IntersectionObserver(probe, {
+      root: null,
+      rootMargin: "-1px 0px -70% 0px",
+      threshold: [0, 0.05, 0.2],
+    });
+    nodes.forEach((n) => io.observe(n));
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
-      window.clearTimeout(later);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      io.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (frame) window.cancelAnimationFrame(frame);
