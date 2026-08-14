@@ -24,13 +24,6 @@ const PRINCIPLES = [
   { roman: "III", title: "Celebrate", copy: "When the hour arrives, the work is to hold the day so it can be lived, not managed." },
 ];
 
-const WHY = [
-  { roman: "I", title: "Thoughtful planning", copy: "Every detail begins with understanding your celebration — not a catalogue of packages." },
-  { roman: "II", title: "Seamless execution", copy: "From preparation to the last farewell, the day is held as one considered whole." },
-  { roman: "III", title: "Beautiful details", copy: "Spaces and sequences designed with intention, so the atmosphere feels inevitable." },
-  { roman: "IV", title: "Your moment, your way", copy: "Your celebration should feel personal. The studio plans with you, not around a formula." },
-];
-
 export default async function HomePage() {
   let settings = null;
   let services: Awaited<ReturnType<typeof getPublishedServices>> = [];
@@ -65,6 +58,12 @@ export default async function HomePage() {
     settings?.about_intro ||
     "From intimate celebrations to unforgettable occasions, we bring together thoughtful planning, beautiful details and seamless execution.";
   const line = settings?.tagline || settings?.hero_headline || BRAND_TAGLINE;
+  const manifestoStatement =
+    settings?.hero_headline || "Every celebration has a story. We help you hold it with care.";
+  const manifestoCopy =
+    settings?.about_intro ||
+    "Uma Events is an event management and planning studio in Vijayawada. The work is atmosphere — space, sequence, and the quiet details that make a day feel considered.";
+  const quoteText = settings?.tagline || settings?.hero_headline || line;
   const whatsapp = whatsappHref(settings?.phone);
 
   return (
@@ -84,22 +83,23 @@ export default async function HomePage() {
       <section className="uma-chapter uma-chapter--ivory uma-manifesto">
         <RadialGlow className="-left-24 top-8" />
         <div className="uma-chapter-inner uma-chapter-inner--narrow">
-          <Reveal className="text-center">
-            <Eyebrow>Welcome</Eyebrow>
-            <h2 className="uma-manifesto-title">
-              Every celebration has a story.
-              <br />
-              We help you hold it with care.
-            </h2>
-            <GoldLineReveal className="mx-auto mt-10 max-w-[9rem]" />
-            <p className="uma-manifesto-copy">
-              {settings?.about_intro ||
-                "Uma Events is an event management and planning studio in Vijayawada. The work is atmosphere — space, sequence, and the quiet details that make a day feel considered."}
-            </p>
-            <UmaButton href="/about" variant="ghost" className="mt-10">
-              About Us
-            </UmaButton>
-          </Reveal>
+          <div className="uma-manifesto-spread">
+            <FadeReveal>
+              <Eyebrow>Welcome</Eyebrow>
+            </FadeReveal>
+            <Reveal delay={0.12} duration={1} y={28}>
+              <h2 className="uma-manifesto-title">{manifestoStatement}</h2>
+            </Reveal>
+            <GoldLineReveal className="mx-auto mt-10 max-w-[9rem]" delay={0.28} />
+            <Reveal delay={0.36}>
+              <p className="uma-manifesto-copy">{manifestoCopy}</p>
+            </Reveal>
+            <Reveal delay={0.44}>
+              <UmaButton href="/about" variant="ghost" className="mt-10">
+                About Us
+              </UmaButton>
+            </Reveal>
+          </div>
         </div>
       </section>
 
@@ -114,6 +114,7 @@ export default async function HomePage() {
               <Reveal key={item.title} delay={i * 0.08} className="uma-trust-item">
                 <p className="uma-service-roman">{item.roman}</p>
                 <h3>{item.title}</h3>
+                <span className="uma-trust-rule" aria-hidden />
                 <p>{item.copy}</p>
               </Reveal>
             ))}
@@ -131,34 +132,30 @@ export default async function HomePage() {
         }))}
       />
 
-      <HomeQuote text="Some moments deserve to be remembered exactly as they felt." image={quoteImage} />
+      <HomeQuote eyebrow="Uma Events" text={quoteText} image={quoteImage} />
 
       <HomeServices services={services} />
 
       <HomeFeatured events={featured} covers={covers} />
 
       <section className="uma-chapter uma-chapter--ivory">
-        <div className="uma-chapter-inner uma-why">
-          <Reveal>
-            <Eyebrow>Approach</Eyebrow>
-            <h2 className="uma-section-title">Why Uma Events</h2>
-            <p className="uma-why-lead">
-              Presence in Vijayawada. A considered process. Planning and production held as one.
-            </p>
-          </Reveal>
-          <ol className="uma-why-list">
-            {WHY.map((item, i) => (
-              <Reveal key={item.title} delay={i * 0.06}>
-                <li className="uma-why-item">
-                  <span className="uma-service-roman">{item.roman}</span>
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.copy}</p>
-                  </div>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
+        <div className="uma-chapter-inner uma-chapter-inner--narrow">
+          <div className="uma-why-spread">
+            <FadeReveal>
+              <Eyebrow>Approach</Eyebrow>
+            </FadeReveal>
+            <Reveal delay={0.1} duration={1} y={28}>
+              <h2 className="uma-why-statement">Why Uma Events</h2>
+            </Reveal>
+            <GoldLineReveal className="mx-auto mt-10 max-w-[8rem]" delay={0.24} />
+            <Reveal delay={0.32}>
+              <p className="uma-why-lead uma-why-lead--center">
+                {settings?.about_intro ||
+                  settings?.tagline ||
+                  "Presence in Vijayawada. A considered process. Planning and production held as one."}
+              </p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
@@ -168,7 +165,8 @@ export default async function HomePage() {
         <div className="uma-chapter-inner uma-contact-grid">
           <FadeReveal>
             <Eyebrow className="uma-eyebrow--gold">Begin</Eyebrow>
-            <h2 className="uma-section-title">Let&apos;s create something worth remembering.</h2>
+            <h2 className="uma-section-title uma-contact-title">Let&apos;s create something worth remembering.</h2>
+            <GoldLineReveal className="mt-8 max-w-[7rem]" delay={0.12} />
             <p className="uma-contact-lead">
               Share a few details. There are no packages to choose from — every gathering is planned on its own terms.
             </p>
@@ -184,7 +182,7 @@ export default async function HomePage() {
               {settings?.contact_email ? <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a> : null}
             </div>
           </FadeReveal>
-          <Reveal delay={0.08}>
+          <Reveal delay={0.1}>
             <EnquiryForm eventTypes={eventTypes} tone="dark" />
           </Reveal>
         </div>

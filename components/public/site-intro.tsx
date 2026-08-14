@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/public/nav";
 
-const STORAGE_KEY = "uma.intro.seen";
+export const INTRO_STORAGE_KEY = "uma.intro.seen";
+export const INTRO_DURATION_MS = 2400;
 
 export function SiteIntro() {
   const reduce = useReducedMotion();
@@ -13,7 +14,7 @@ export function SiteIntro() {
   useEffect(() => {
     if (reduce) return;
     try {
-      if (sessionStorage.getItem(STORAGE_KEY) === "1") return;
+      if (sessionStorage.getItem(INTRO_STORAGE_KEY) === "1") return;
     } catch {
       /* private mode */
     }
@@ -21,11 +22,11 @@ export function SiteIntro() {
     const done = window.setTimeout(() => {
       setVisible(false);
       try {
-        sessionStorage.setItem(STORAGE_KEY, "1");
+        sessionStorage.setItem(INTRO_STORAGE_KEY, "1");
       } catch {
         /* ignore */
       }
-    }, 2400);
+    }, INTRO_DURATION_MS);
     return () => window.clearTimeout(done);
   }, [reduce]);
 

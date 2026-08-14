@@ -14,6 +14,7 @@ export function CinematicBackdrop({
   className,
   overlay = "default",
   children,
+  eager = false,
 }: {
   video?: string | null;
   image?: string | null;
@@ -21,6 +22,7 @@ export function CinematicBackdrop({
   className?: string;
   overlay?: "default" | "hero" | "quote";
   children?: ReactNode;
+  eager?: boolean;
 }) {
   return (
     <div className={cn("uma-cinematic-stage", className)}>
@@ -37,7 +39,13 @@ export function CinematicBackdrop({
         </video>
       ) : image ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={image} alt={alt} className="uma-cinematic-media" />
+        <img
+          src={image}
+          alt={alt}
+          className="uma-cinematic-media"
+          loading={eager ? "eager" : "lazy"}
+          decoding="async"
+        />
       ) : (
         <div className="uma-cinematic-fallback" />
       )}

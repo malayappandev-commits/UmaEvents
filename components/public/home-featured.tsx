@@ -33,7 +33,13 @@ export function HomeFeatured({
                     <HoverZoom className="h-full w-full">
                       {covers[event.id] ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={covers[event.id] || ""} alt={event.title} className="h-full w-full object-cover" />
+                        <img
+                          src={covers[event.id] || ""}
+                          alt={event.title}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
                       ) : (
                         <div className="uma-reel-fallback h-full" />
                       )}
@@ -48,7 +54,7 @@ export function HomeFeatured({
                     {event.description ? <p className="uma-featured-desc">{event.description}</p> : null}
                     <div className="uma-featured-actions">
                       <UmaButton href={`/portfolio/${event.slug}`} variant="secondary">
-                        View event
+                        View Event
                       </UmaButton>
                       {live ? (
                         <a href={live} className="uma-btn uma-btn-primary" target="_blank" rel="noreferrer">

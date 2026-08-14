@@ -25,7 +25,7 @@ export function HomeServices({ services }: { services: Service[] }) {
               const slug = slugify(service.title) || service.id;
               return (
                 <li key={service.id}>
-                  <Reveal delay={Math.min(i * 0.05, 0.2)}>
+                  <Reveal delay={Math.min(i * 0.06, 0.24)}>
                     <Link href={`/services/${slug}`} className="uma-service-line">
                       <span className="uma-service-roman">{ROMAN[i] ?? i + 1}</span>
                       <span className="uma-service-copy">
@@ -41,7 +41,7 @@ export function HomeServices({ services }: { services: Service[] }) {
                       {service.image_url ? (
                         <span className="uma-service-preview" aria-hidden>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={service.image_url} alt="" />
+                          <img src={service.image_url} alt="" loading="lazy" decoding="async" />
                         </span>
                       ) : null}
                     </Link>

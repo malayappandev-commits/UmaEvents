@@ -1,4 +1,4 @@
-import { Reveal } from "@/components/public/motion";
+import { GoldLineReveal, Reveal } from "@/components/public/motion";
 import { Eyebrow } from "@/components/public/ui";
 
 export type HomeTestimonial = {
@@ -35,9 +35,13 @@ export function HomeTestimonials({ items }: { items: HomeTestimonial[] }) {
             ))}
           </div>
         ) : (
-          <p className="uma-empty uma-empty--center">
-            Host reflections will appear here when they are shared with the studio.
-          </p>
+          <div className="uma-testimonial-await">
+            <GoldLineReveal className="mx-auto max-w-[6rem]" />
+            <p className="uma-empty uma-empty--center">
+              Host reflections will appear here when they are shared with the studio.
+            </p>
+            <p className="uma-testimonial-await-note">A quiet place for words that are actually given.</p>
+          </div>
         )}
       </div>
     </section>
