@@ -3,6 +3,8 @@ import { getCoverMap, getPublishedProjects, getPublishedServices, getSettings, s
 import { jsonLdLocalBusiness } from "@/lib/seo";
 import { EnquiryForm } from "@/components/public/enquiry-form";
 import { HomeVisual } from "@/components/public/home-visual";
+import { FadeReveal, GoldLineReveal, HoverZoom, Reveal } from "@/components/public/motion";
+import { Eyebrow, Quote, RadialGlow, UmaButton } from "@/components/public/ui";
 import { formatDate } from "@/lib/utils";
 
 export default async function HomePage() {
@@ -51,44 +53,45 @@ export default async function HomePage() {
       />
 
       <section className="relative overflow-hidden bg-ivory px-6 py-24 md:px-10 md:py-32">
+        <RadialGlow className="-left-24 top-10" />
         <div className="mx-auto grid max-w-7xl items-end gap-12 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Uma Events</p>
-            <h2 className="mt-4 font-serif text-4xl leading-tight text-charcoal md:text-6xl">
-              Gatherings, held with care.
-            </h2>
-          </div>
-          <div className="md:col-span-6 md:col-start-7">
+          <Reveal className="md:col-span-5">
+            <Eyebrow>Uma Events</Eyebrow>
+            <h2 className="uma-section-title mt-4 text-charcoal">Gatherings, held with care.</h2>
+          </Reveal>
+          <Reveal delay={0.12} className="md:col-span-6 md:col-start-7">
             <p className="text-lg leading-relaxed text-charcoal/75">
               {settings?.about_intro ||
                 "Uma Events is an event management and event planning studio based in Vijayawada, Andhra Pradesh. The work is to shape atmosphere — space, sequence, and the details that make a day feel considered."}
             </p>
-            <Link href="/about" className="mt-8 inline-block text-[11px] tracking-[0.28em] text-earth uppercase">
-              The studio →
-            </Link>
-          </div>
+            <UmaButton href="/about" variant="ghost" className="mt-8">
+              About Us
+            </UmaButton>
+          </Reveal>
         </div>
       </section>
 
-      <section className="bg-charcoal px-6 py-24 text-ivory md:px-10">
+      <section className="relative overflow-hidden bg-charcoal px-6 py-24 text-ivory md:px-10">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-6">
-            <div>
-              <p className="text-[11px] tracking-[0.32em] text-gold uppercase">What we do</p>
-              <h2 className="mt-3 font-serif text-4xl md:text-5xl">Signature services</h2>
-            </div>
+            <Reveal>
+              <Eyebrow className="uma-eyebrow--gold">What we do</Eyebrow>
+              <h2 className="uma-section-title mt-3">Signature services</h2>
+            </Reveal>
             <Link href="/services" className="hidden text-[11px] tracking-[0.28em] uppercase text-gold md:block">
               All services
             </Link>
           </div>
           {services.length ? (
             <div className="mt-14 grid gap-px bg-white/10 md:grid-cols-3">
-              {services.slice(0, 6).map((s) => (
-                <article key={s.id} className="bg-charcoal p-8 transition hover:bg-ink">
-                  <p className="text-[10px] tracking-[0.28em] text-gold/80 uppercase">{s.category}</p>
-                  <h3 className="mt-4 font-serif text-3xl">{s.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-ivory/60">{s.short_description}</p>
-                </article>
+              {services.slice(0, 6).map((s, i) => (
+                <Reveal key={s.id} delay={i * 0.06}>
+                  <article className="bg-charcoal p-8 transition hover:bg-ink">
+                    <p className="text-[10px] tracking-[0.28em] text-gold/80 uppercase">{s.category}</p>
+                    <h3 className="mt-4 font-serif text-3xl">{s.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-ivory/60">{s.short_description}</p>
+                  </article>
+                </Reveal>
               ))}
             </div>
           ) : (
@@ -101,8 +104,9 @@ export default async function HomePage() {
 
       <section className="px-6 py-24 md:px-10 md:py-32">
         <div className="mx-auto max-w-7xl">
-          <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Archive</p>
-          <h2 className="mt-3 font-serif text-4xl md:text-6xl">Selected events</h2>
+          <Eyebrow>Archive</Eyebrow>
+          <h2 className="uma-section-title mt-3">Selected events</h2>
+          <GoldLineReveal className="mt-8 max-w-xs" />
           {featured.length ? (
             <div className="mt-14 grid gap-4 md:grid-cols-12">
               {featured.map((p, i) => {
@@ -114,16 +118,14 @@ export default async function HomePage() {
                     href={`/portfolio/${p.slug}`}
                     className={`group relative overflow-hidden bg-charcoal ${span}`}
                   >
-                    {covers[p.id] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={covers[p.id] || ""}
-                        alt={p.title}
-                        className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-charcoal to-earth/40" />
-                    )}
+                    <HoverZoom className="absolute inset-0">
+                      {covers[p.id] ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={covers[p.id] || ""} alt={p.title} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full bg-gradient-to-br from-charcoal to-earth/40" />
+                      )}
+                    </HoverZoom>
                     <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
                     <div className="absolute bottom-0 p-6 text-ivory">
                       <p className="text-[10px] tracking-[0.28em] uppercase text-gold">{p.event_type}</p>
@@ -141,17 +143,17 @@ export default async function HomePage() {
               Published events will appear here once they are added in the studio.
             </p>
           )}
-          <Link href="/portfolio" className="mt-10 inline-block text-[11px] tracking-[0.28em] text-earth uppercase">
-            View the archive →
-          </Link>
+          <UmaButton href="/portfolio" variant="ghost" className="mt-10">
+            View Gallery
+          </UmaButton>
         </div>
       </section>
 
       {categories.length ? (
         <section className="border-y border-charcoal/10 bg-cream/50 px-6 py-20 md:px-10">
           <div className="mx-auto max-w-7xl">
-            <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Explore</p>
-            <h2 className="mt-3 font-serif text-4xl">Event categories</h2>
+            <Eyebrow>Explore</Eyebrow>
+            <h2 className="uma-section-title mt-3">Event categories</h2>
             <div className="mt-10 flex flex-wrap gap-3">
               {categories.map((c) => (
                 <Link
@@ -169,10 +171,11 @@ export default async function HomePage() {
 
       <section className="px-6 py-24 md:px-10">
         <div className="mx-auto grid max-w-7xl gap-16 md:grid-cols-2">
-          <div>
-            <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Approach</p>
-            <h2 className="mt-3 font-serif text-4xl md:text-5xl">Why Uma Events</h2>
-          </div>
+          <Reveal>
+            <Eyebrow>Approach</Eyebrow>
+            <h2 className="uma-section-title mt-3">Why Uma Events</h2>
+            <Quote className="mt-8 text-charcoal/80">Luxury Indian celebrations, told with cinematic care.</Quote>
+          </Reveal>
           <ul className="space-y-8 text-charcoal/80">
             <li>
               <p className="font-serif text-2xl">Presence in Vijayawada</p>
@@ -202,7 +205,7 @@ export default async function HomePage() {
         <section className="overflow-hidden bg-ink py-8">
           <div className="flex gap-3 overflow-x-auto px-6 pb-4">
             {gallery.map((p) => (
-              <Link key={p.id} href={`/portfolio/${p.slug}`} className="relative h-56 w-80 shrink-0 overflow-hidden">
+              <Link key={p.id} href={`/portfolio/${p.slug}`} className="uma-hover-zoom relative h-56 w-80 shrink-0">
                 {covers[p.id] ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={covers[p.id] || ""} alt={p.title} className="h-full w-full object-cover" />
@@ -217,12 +220,14 @@ export default async function HomePage() {
 
       <section className="bg-cream px-6 py-24 md:px-10">
         <div className="mx-auto max-w-3xl">
-          <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Begin</p>
-          <h2 className="mt-3 font-serif text-4xl md:text-5xl">Tell us about the day</h2>
-          <p className="mt-4 text-charcoal/70">
-            Share a few details. There are no packages to choose from — every gathering is planned on
-            its own terms.
-          </p>
+          <FadeReveal>
+            <Eyebrow>Begin</Eyebrow>
+            <h2 className="uma-section-title mt-3">Tell us about the day</h2>
+            <p className="mt-4 text-charcoal/70">
+              Share a few details. There are no packages to choose from — every gathering is planned on
+              its own terms.
+            </p>
+          </FadeReveal>
           <div className="mt-10">
             <EnquiryForm eventTypes={categories} />
           </div>
@@ -232,12 +237,12 @@ export default async function HomePage() {
       <section className="px-6 py-20 md:px-10">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Visit</p>
+            <Eyebrow>Visit</Eyebrow>
             <p className="mt-2 font-serif text-3xl">{settings?.address || "Vijayawada, Andhra Pradesh"}</p>
           </div>
-          <Link href="/contact" className="text-[11px] tracking-[0.28em] uppercase text-earth">
-            Contact →
-          </Link>
+          <UmaButton href="/contact" variant="ghost">
+            Contact Us
+          </UmaButton>
         </div>
       </section>
     </>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getEventTypes, getSettings } from "@/lib/queries/public";
 import { EnquiryForm } from "@/components/public/enquiry-form";
+import { Reveal } from "@/components/public/motion";
+import { Eyebrow } from "@/components/public/ui";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -19,11 +21,11 @@ export default async function ContactPage() {
   }
 
   return (
-    <main className="px-6 pb-24 pt-12 md:px-10">
+    <main className="uma-page">
       <div className="mx-auto grid max-w-6xl gap-16 md:grid-cols-12">
-        <div className="md:col-span-5">
-          <p className="text-[11px] tracking-[0.32em] text-earth uppercase">Contact</p>
-          <h1 className="mt-4 font-serif text-5xl md:text-6xl">Begin a conversation</h1>
+        <Reveal className="md:col-span-5">
+          <Eyebrow>Contact Us</Eyebrow>
+          <h1 className="uma-display mt-4">Begin a conversation</h1>
           <p className="mt-6 text-charcoal/70">
             Tell Uma Events about the gathering. The studio will reply with next steps — not a menu of
             packages.
@@ -37,10 +39,10 @@ export default async function ContactPage() {
               </a>
             ) : null}
           </div>
-        </div>
-        <div className="md:col-span-7">
+        </Reveal>
+        <Reveal delay={0.1} className="md:col-span-7">
           <EnquiryForm eventTypes={types} />
-        </div>
+        </Reveal>
       </div>
     </main>
   );
