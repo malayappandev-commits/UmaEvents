@@ -252,10 +252,122 @@ body {
 .uma-cinematic-fallback {
   width: 100%;
   height: 100%;
+  position: relative;
+  overflow: hidden;
   background:
-    radial-gradient(ellipse at 30% 20%, #3a2c24 0%, transparent 52%),
-    radial-gradient(ellipse at 80% 80%, color-mix(in srgb, var(--color-burgundy) 28%, transparent), transparent 45%),
-    #0b0a09;
+    radial-gradient(ellipse at 50% 38%, #5a3d28 0%, transparent 42%),
+    radial-gradient(ellipse at 18% 80%, #3a1c22 0%, transparent 48%),
+    radial-gradient(ellipse at 88% 18%, #2c2418 0%, transparent 40%),
+    #14100c;
+}
+
+.uma-stage-art {
+  position: absolute;
+  inset: 0;
+}
+
+.uma-stage-art-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(40px);
+}
+
+.uma-stage-art-glow--a {
+  width: 42vw;
+  height: 42vw;
+  left: 50%;
+  top: 28%;
+  transform: translate(-50%, -50%);
+  background: color-mix(in srgb, var(--color-gold) 38%, transparent);
+  opacity: 0.45;
+}
+
+.uma-stage-art-glow--b {
+  width: 28vw;
+  height: 18vw;
+  left: 12%;
+  bottom: 12%;
+  background: color-mix(in srgb, var(--color-burgundy) 50%, transparent);
+  opacity: 0.4;
+}
+
+.uma-stage-art-glow--c {
+  width: 22vw;
+  height: 22vw;
+  right: 10%;
+  top: 18%;
+  background: color-mix(in srgb, var(--color-champagne) 35%, transparent);
+  opacity: 0.35;
+}
+
+.uma-stage-art-bokeh {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 18% 30%, rgba(220, 199, 160, 0.35) 0 4px, transparent 5px),
+    radial-gradient(circle at 72% 22%, rgba(196, 165, 116, 0.28) 0 6px, transparent 7px),
+    radial-gradient(circle at 40% 70%, rgba(245, 240, 227, 0.18) 0 3px, transparent 4px),
+    radial-gradient(circle at 82% 64%, rgba(196, 165, 116, 0.22) 0 5px, transparent 6px),
+    radial-gradient(circle at 28% 52%, rgba(220, 199, 160, 0.2) 0 3px, transparent 4px);
+}
+
+.uma-stage-art-arch {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: min(72vw, 42rem);
+  height: 88%;
+  transform: translateX(-50%);
+  color: color-mix(in srgb, var(--color-gold) 55%, transparent);
+  opacity: 0.55;
+}
+
+.uma-ambient--stage .uma-ambient-inner .uma-cinematic-media,
+.uma-ambient--stage .uma-cinematic-fallback {
+  opacity: 1;
+}
+
+.uma-ambient--stage .uma-ambient-wash {
+  background:
+    radial-gradient(ellipse at center, transparent 18%, rgba(18, 14, 12, 0.35) 100%),
+    linear-gradient(180deg, rgba(18, 14, 12, 0.12) 0%, rgba(18, 14, 12, 0.22) 48%, rgba(18, 14, 12, 0.62) 100%);
+}
+
+.uma-hero--stage::before {
+  background:
+    radial-gradient(ellipse at center, transparent 42%, rgba(18, 14, 12, 0.28) 100%),
+    linear-gradient(180deg, rgba(18, 14, 12, 0.04) 0%, rgba(18, 14, 12, 0.08) 52%, rgba(18, 14, 12, 0.55) 100%);
+}
+
+.uma-filmstrip-section::before,
+.uma-filmstrip-section::after {
+  content: "";
+  position: absolute;
+  top: 7.5rem;
+  bottom: 5.5rem;
+  width: 0.7rem;
+  background: repeating-linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-gold) 28%, transparent) 0 8px,
+    transparent 8px 22px
+  );
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.uma-filmstrip-section::before {
+  left: 0.35rem;
+}
+
+.uma-filmstrip-section::after {
+  right: 0.35rem;
+}
+
+@media (max-width: 767px) {
+  .uma-filmstrip-section::before,
+  .uma-filmstrip-section::after {
+    display: none;
+  }
 }
 
 .uma-cinematic-overlay {
@@ -1628,8 +1740,26 @@ body.uma-nav-open {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 30% 20%, #4a382c 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, color-mix(in srgb, var(--color-burgundy) 35%, transparent), transparent 48%),
+    radial-gradient(ellipse at 30% 20%, #6a4a32 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, color-mix(in srgb, var(--color-burgundy) 45%, transparent), transparent 48%),
+    linear-gradient(160deg, #3a2c24, #120e0c);
+}
+
+.uma-reel-frame--await:nth-child(2) .uma-reel-unexposed {
+  background:
+    radial-gradient(ellipse at 70% 30%, #7a5a38 0%, transparent 46%),
+    linear-gradient(200deg, #2c1c20, #120e0c);
+}
+
+.uma-reel-frame--await:nth-child(3) .uma-reel-unexposed {
+  background:
+    radial-gradient(ellipse at 40% 70%, #4a3828 0%, transparent 50%),
+    linear-gradient(20deg, #241810, #120e0c);
+}
+
+.uma-reel-frame--await:nth-child(4) .uma-reel-unexposed {
+  background:
+    radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--color-gold) 22%, transparent), transparent 42%),
     linear-gradient(160deg, #2a221c, #0d0b0a);
 }
 

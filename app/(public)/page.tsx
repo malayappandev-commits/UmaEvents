@@ -108,7 +108,11 @@ export default async function HomePage() {
 
       <AmbientFilm video={settings?.hero_video_url} image={settings?.hero_image_url} />
 
-      <HomeVisual headline={headline} supporting={supporting} />
+      <HomeVisual
+        headline={headline}
+        supporting={supporting}
+        hasMedia={Boolean(settings?.hero_video_url || settings?.hero_image_url)}
+      />
       <OrganicDivider />
 
       <section className="uma-statement uma-surface-dark">

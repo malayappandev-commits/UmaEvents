@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { CinematicStageArt } from "@/components/public/cinematic-stage-art";
 
 /**
  * Reusable cinematic media layer. Video/image URLs come from existing
@@ -47,7 +48,9 @@ export function CinematicBackdrop({
           decoding="async"
         />
       ) : (
-        <div className="uma-cinematic-fallback" />
+        <div className="uma-cinematic-fallback">
+          <CinematicStageArt />
+        </div>
       )}
       <div className={cn("uma-cinematic-overlay", overlay !== "default" && `uma-cinematic-overlay--${overlay}`)} />
       <div className="noise-overlay" />

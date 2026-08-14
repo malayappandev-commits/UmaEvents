@@ -12,9 +12,10 @@ export function AmbientFilm({
   image?: string | null;
 }) {
   const reduce = useReducedMotion();
+  const empty = !video && !image;
 
   return (
-    <div className="uma-ambient" aria-hidden>
+    <div className={empty ? "uma-ambient uma-ambient--stage" : "uma-ambient"} aria-hidden>
       <motion.div
         className="uma-ambient-inner"
         initial={false}
