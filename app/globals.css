@@ -484,13 +484,18 @@ body {
   transform: translateY(-3.5px) rotate(-45deg);
 }
 
+.uma-nav--open {
+  background: var(--color-ink);
+  backdrop-filter: none;
+  border-bottom-color: color-mix(in srgb, var(--color-gold) 22%, transparent);
+}
+
 .uma-nav-drawer {
   position: absolute;
   inset: 100% 0 auto;
   min-height: calc(100svh - 4rem);
   padding: 1.5rem 1.5rem 3rem;
-  background: color-mix(in srgb, var(--color-ink) 92%, transparent);
-  backdrop-filter: blur(22px);
+  background: var(--color-ink);
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
