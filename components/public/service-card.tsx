@@ -16,7 +16,7 @@ export function ServiceCard({ service }: { service: Service }) {
           <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{service.short_description}</p>
         ) : null}
         <Link
-          href={`/services/${service.slug}`}
+          href={`/services/${service.slug || service.id}`}
           className="mt-5 inline-block text-[11px] tracking-[0.22em] text-earth uppercase"
         >
           View more →

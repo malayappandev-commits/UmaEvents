@@ -47,14 +47,17 @@ export async function getPublishedServices() {
 export async function getPublishedServiceBySlug(slug: string) {
   if (!supabaseConfigured()) return null;
   const supabase = createAnonClient();
-  const { data, error } = await supabase
+  const bySlug = await supabase
     .from("services")
     .select("*")
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
-  if (error) throw error;
-  return data as Service | null;
+  if (!bySlug.error) return (bySlug.data as Service | null) ?? null;
+
+  const byId = await supabase.from("services").select("*").eq("id", slug).eq("published", true).maybeSingle();
+  if (byId.error) return null;
+  return (byId.data as Service | null) ?? null;
 }
 
 export async function getServiceMedia(serviceId: string) {
@@ -102,7 +105,10 @@ export async function getPublishedProjects(options?: { featured?: boolean; event
   }
 
   const { data, error } = await query;
-  if (error) throw error;
+  if (error) {
+    if (options?.milestones || options?.featured) return [];
+    throw error;
+  }
   return (data ?? []) as Project[];
 }
 
