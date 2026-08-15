@@ -1,15 +1,13 @@
 import nodemailer from "nodemailer";
 import type { EnquiryInput } from "@/lib/validations/enquiry";
 
-function smtpConfigured() {
+export function smtpConfigured() {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_FROM);
 }
 
-export async function sendEnquiryNotification(enquiry: EnquiryInput) {
-  if (!smtpConfigured()) return { sent: false as const, reason: "smtp-not-configured" };
-
+function transporter() {
   const port = Number(process.env.SMTP_PORT || 587);
-  const transporter = nodemailer.createTransport({
+  return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
     secure: port === 465,
@@ -18,10 +16,10 @@ export async function sendEnquiryNotification(enquiry: EnquiryInput) {
         ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
         : undefined,
   });
+}
 
-  const to = process.env.SMTP_TO || process.env.SMTP_FROM;
-  const subject = `Uma Events enquiry${enquiry.event_type ? ` — ${enquiry.event_type}` : ""}`;
-  const text = [
+function enquiryBody(enquiry: EnquiryInput) {
+  return [
     `Name: ${enquiry.name}`,
     `Email: ${enquiry.email}`,
     `Phone: ${enquiry.phone}`,
@@ -33,14 +31,41 @@ export async function sendEnquiryNotification(enquiry: EnquiryInput) {
     "",
     enquiry.message,
   ].join("\n");
+}
 
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM,
-    to,
+export async function sendEnquiryEmails(enquiry: EnquiryInput) {
+  if (!smtpConfigured()) {
+    return {
+      adminSent: false as const,
+      customerSent: false as const,
+      reason: "smtp-not-configured" as const,
+    };
+  }
+
+  const mailer = transporter();
+  const adminTo = process.env.SMTP_TO || process.env.SMTP_FROM;
+  const from = process.env.SMTP_FROM as string;
+
+  await mailer.sendMail({
+    from,
+    to: adminTo,
     replyTo: enquiry.email,
-    subject,
-    text,
+    subject: `Uma Events enquiry${enquiry.event_type ? ` — ${enquiry.event_type}` : ""}`,
+    text: enquiryBody(enquiry),
   });
 
-  return { sent: true as const };
+  await mailer.sendMail({
+    from,
+    to: enquiry.email,
+    subject: "Uma Events — we received your enquiry",
+    text: [
+      `Hello ${enquiry.name},`,
+      "",
+      "Uma Events has received your enquiry. The studio will be in touch.",
+      "",
+      enquiryBody(enquiry),
+    ].join("\n"),
+  });
+
+  return { adminSent: true as const, customerSent: true as const };
 }

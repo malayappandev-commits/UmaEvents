@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getProjectBySlug, getProjectMedia, getSettings, signMediaUrl } from "@/lib/queries/public";
 import { EnquiryForm } from "@/components/public/enquiry-form";
 import { ProjectGallery } from "@/components/public/project-gallery";
-import { formatDate, siteUrl } from "@/lib/utils";
+import { formatDate, isPublicLiveUrl, siteUrl } from "@/lib/utils";
 
 type Props = { params: Promise<{ projectId: string }> };
 
@@ -93,9 +93,9 @@ export default async function ProjectPage({ params }: Props) {
           <p className="mt-3 text-ivory/75">
             {[project.location, formatDate(project.event_date)].filter(Boolean).join(" · ")}
           </p>
-          {project.live_url ? (
+          {isPublicLiveUrl(project.live_url) ? (
             <a
-              href={project.live_url}
+              href={project.live_url!}
               target="_blank"
               rel="noreferrer"
               className="mt-6 inline-block border border-gold/50 px-4 py-2 text-[11px] tracking-[0.22em] uppercase text-gold"

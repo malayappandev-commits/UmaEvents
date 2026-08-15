@@ -14,7 +14,7 @@ import { HomeVisual } from "@/components/public/home-visual";
 import { ContactSection } from "@/components/public/contact-section";
 import { EmptyState } from "@/components/public/empty-state";
 import { ServiceCard } from "@/components/public/service-card";
-import { formatDate } from "@/lib/utils";
+import { formatDate, isPublicLiveUrl } from "@/lib/utils";
 
 export default async function HomePage() {
   let settings = null;
@@ -140,9 +140,9 @@ export default async function HomePage() {
                       <Link href={`/portfolio/${p.slug}`} className="text-[11px] tracking-[0.2em] uppercase text-gold">
                         View event
                       </Link>
-                      {p.live_url ? (
+                      {isPublicLiveUrl(p.live_url) ? (
                         <a
-                          href={p.live_url}
+                          href={p.live_url!}
                           target="_blank"
                           rel="noreferrer"
                           className="text-[11px] tracking-[0.2em] uppercase text-ivory"

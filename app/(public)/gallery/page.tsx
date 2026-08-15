@@ -7,7 +7,7 @@ import {
   signMediaUrl,
 } from "@/lib/queries/public";
 import { EmptyState } from "@/components/public/empty-state";
-import { formatDate } from "@/lib/utils";
+import { formatDate, isPublicLiveUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Gallery",
@@ -91,9 +91,9 @@ export default async function GalleryPage() {
                     <p className="mt-6 whitespace-pre-wrap leading-7 text-charcoal/80">
                       {event.milestone_description || event.description || "A milestone gathering produced by Uma Events."}
                     </p>
-                    {event.live_url ? (
+                    {isPublicLiveUrl(event.live_url) ? (
                       <a
-                        href={event.live_url}
+                        href={event.live_url!}
                         target="_blank"
                         rel="noreferrer"
                         className="mt-6 inline-block text-[11px] tracking-[0.22em] uppercase text-earth"

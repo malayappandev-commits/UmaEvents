@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { formatDateShort } from "@/lib/utils";
+import { formatDateShort, isPublicLiveUrl } from "@/lib/utils";
 import type { Project } from "@/types";
 
 export function EventFlagsBoard({
@@ -68,10 +68,10 @@ export function EventFlagsBoard({
                       className="w-56 border border-white/15 bg-transparent px-2 py-1 text-xs"
                       onBlur={(e) => {
                         const value = e.target.value.trim();
-                        void patch(p.id, { live_url: value || null });
+                        void patch(p.id, { live_url: isPublicLiveUrl(value) ? value : null });
                       }}
                     />
-                    <p className="mt-1 text-[10px] text-admin-muted">Watch Live shows only when this is set.</p>
+                    <p className="mt-1 text-[10px] text-admin-muted">Watch Live shows only for a valid http(s) URL.</p>
                   </td>
                 </>
               ) : (

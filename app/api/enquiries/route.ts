@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import { enquirySchema } from "@/lib/validations/enquiry";
-import { sendEnquiryNotification } from "@/lib/email";
+import { sendEnquiryEmails } from "@/lib/email";
 
 export async function POST(request: Request) {
   if (!supabaseConfigured()) {
@@ -35,13 +35,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
-  let emailSent = false;
+  let adminEmailSent = false;
+  let customerEmailSent = false;
   try {
-    const result = await sendEnquiryNotification(parsed.data);
-    emailSent = result.sent;
+    const result = await sendEnquiryEmails(parsed.data);
+    adminEmailSent = result.adminSent;
+    customerEmailSent = result.customerSent;
   } catch {
-    emailSent = false;
+    adminEmailSent = false;
+    customerEmailSent = false;
   }
 
-  return NextResponse.json({ ok: true, emailSent });
+  return NextResponse.json({ ok: true, emailSent: adminEmailSent, customerEmailSent });
 }
