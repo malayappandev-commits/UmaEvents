@@ -44,7 +44,7 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="font-serif text-4xl">Studio</h1>
+      <h1 className="font-serif text-4xl">Admin portal</h1>
       <p className="mt-2 text-sm text-admin-muted">Live figures from Uma Events — nothing here is hardcoded.</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map((c) => (

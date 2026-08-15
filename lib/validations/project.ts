@@ -15,6 +15,10 @@ export const projectSchema = z.object({
   videographer: z.string().trim().max(160).optional().nullable(),
   guest_count: z.coerce.number().int().positive().optional().nullable(),
   event_highlights: z.array(z.string().trim().min(1).max(200)).optional().default([]),
+  live_url: z.union([z.string().trim().url(), z.literal(""), z.null()]).optional(),
+  is_milestone: z.boolean().optional().default(false),
+  milestone_order: z.coerce.number().int().optional().default(0),
+  milestone_description: z.string().trim().max(4000).optional().default(""),
 });
 
 export type ProjectInput = z.infer<typeof projectSchema>;

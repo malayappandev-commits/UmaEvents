@@ -3,10 +3,10 @@ import { getSettings } from "@/lib/queries/public";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
-  { href: "/portfolio", label: "Events" },
-  { href: "/contact", label: "Contact" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/about", label: "AboutUS" },
+  { href: "/contact", label: "ContactUs" },
 ];
 
 export async function PublicHeader() {
@@ -90,8 +90,11 @@ export async function PublicFooter() {
           <Link href="/services" className="hover:text-gold">
             Services
           </Link>
-          <Link href="/portfolio" className="hover:text-gold">
-            Selected events
+          <Link href="/gallery" className="hover:text-gold">
+            Gallery
+          </Link>
+          <Link href="/about" className="hover:text-gold">
+            AboutUS
           </Link>
           <Link href="/contact" className="hover:text-gold">
             Enquire

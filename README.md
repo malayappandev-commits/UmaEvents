@@ -17,6 +17,7 @@ There is no separate database or auth system. Media binaries live in Supabase St
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY` (server only — never expose to the browser)
    - `NEXT_PUBLIC_SITE_URL`
+   - Optional SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_TO`) so contact enquiries can also send email. Enquiries are always stored in the database.
 
 3. Apply migrations from `supabase/migrations/` in the Supabase SQL editor (in filename order) or with the Supabase CLI:
 
@@ -41,9 +42,9 @@ There is no separate database or auth system. Media binaries live in Supabase St
 
 | Audience | Paths |
 | --- | --- |
-| Public | `/` `/about` `/services` `/portfolio` `/portfolio/[slug]` `/contact` |
+| Public | `/` `/services` `/services/[slug]` `/gallery` `/about` `/contact` `/portfolio/[slug]` (event detail) |
 | Auth | `/login` |
-| Admin / Owner | `/admin` and nested studio pages |
+| Admin / Owner | `/admin` (portal, profile, notifications, employee management, enquiries, featured events, testimonials, services gallery, service ratings, main gallery, milestones, services) |
 | Employees | `/employee` `/employee/projects` `/employee/projects/[id]` |
 
 Permissions are enforced with Postgres Row Level Security and Storage policies, not only UI checks.

@@ -1,6 +1,28 @@
 import { createAnonClient } from "@/lib/supabase/anon";
 import { supabaseConfigured } from "@/lib/supabase/env";
-import type { Media, Project, Service, StudioSettings } from "@/types";
+import type {
+  GalleryMedia,
+  Media,
+  Project,
+  Service,
+  ServiceMedia,
+  ServiceRating,
+  SiteRating,
+  StudioSettings,
+  Testimonial,
+  WhyChooseUsItem,
+} from "@/types";
+
+async function safeList<T>(run: () => PromiseLike<{ data: T[] | null; error: { message: string } | null }>): Promise<T[]> {
+  if (!supabaseConfigured()) return [];
+  try {
+    const { data, error } = await run();
+    if (error) return [];
+    return (data ?? []) as T[];
+  } catch {
+    return [];
+  }
+}
 
 export async function getSettings() {
   if (!supabaseConfigured()) return null;
@@ -22,7 +44,43 @@ export async function getPublishedServices() {
   return (data ?? []) as Service[];
 }
 
-export async function getPublishedProjects(options?: { featured?: boolean; eventType?: string }) {
+export async function getPublishedServiceBySlug(slug: string) {
+  if (!supabaseConfigured()) return null;
+  const supabase = createAnonClient();
+  const { data, error } = await supabase
+    .from("services")
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+  if (error) throw error;
+  return data as Service | null;
+}
+
+export async function getServiceMedia(serviceId: string) {
+  return safeList<ServiceMedia>(() =>
+    createAnonClient()
+      .from("service_media")
+      .select("*")
+      .eq("service_id", serviceId)
+      .eq("published", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true }),
+  );
+}
+
+export async function getServiceRatings(serviceId: string) {
+  return safeList<ServiceRating>(() =>
+    createAnonClient()
+      .from("service_ratings")
+      .select("*")
+      .eq("service_id", serviceId)
+      .eq("published", true)
+      .order("created_at", { ascending: false }),
+  );
+}
+
+export async function getPublishedProjects(options?: { featured?: boolean; eventType?: string; milestones?: boolean }) {
   if (!supabaseConfigured()) return [];
   const supabase = createAnonClient();
   let query = supabase
@@ -33,6 +91,15 @@ export async function getPublishedProjects(options?: { featured?: boolean; event
 
   if (options?.featured) query = query.eq("featured", true);
   if (options?.eventType) query = query.eq("event_type", options.eventType);
+  if (options?.milestones) {
+    query = supabase
+      .from("projects")
+      .select("*")
+      .eq("published", true)
+      .eq("is_milestone", true)
+      .order("milestone_order", { ascending: true })
+      .order("event_date", { ascending: false, nullsFirst: false });
+  }
 
   const { data, error } = await query;
   if (error) throw error;
@@ -88,10 +155,58 @@ export async function getEventTypes() {
   return types;
 }
 
+export async function getPublishedSiteRatings() {
+  return safeList<SiteRating>(() =>
+    createAnonClient()
+      .from("site_ratings")
+      .select("*")
+      .eq("published", true)
+      .order("display_order", { ascending: true }),
+  );
+}
+
+export async function getPublishedTestimonials() {
+  return safeList<Testimonial>(() =>
+    createAnonClient()
+      .from("testimonials")
+      .select("*")
+      .eq("published", true)
+      .order("display_order", { ascending: true }),
+  );
+}
+
+export async function getPublishedWhyChooseUs() {
+  return safeList<WhyChooseUsItem>(() =>
+    createAnonClient()
+      .from("why_choose_us_items")
+      .select("*")
+      .eq("published", true)
+      .order("display_order", { ascending: true }),
+  );
+}
+
+export async function getPublishedGalleryMedia() {
+  return safeList<GalleryMedia>(() =>
+    createAnonClient()
+      .from("gallery_media")
+      .select("*")
+      .eq("published", true)
+      .order("display_order", { ascending: true })
+      .order("event_date", { ascending: false, nullsFirst: false }),
+  );
+}
+
 export async function signMediaUrl(path: string | null | undefined, expiresIn = 60 * 60 * 24) {
   if (!path) return null;
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   const supabase = createAnonClient();
   const { data } = await supabase.storage.from("project-media").createSignedUrl(path, expiresIn);
   return data?.signedUrl ?? null;
+}
+
+export function publicAssetUrl(path: string | null | undefined) {
+  if (!path) return null;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  const supabase = createAnonClient();
+  return supabase.storage.from("public-assets").getPublicUrl(path).data.publicUrl;
 }
