@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { enquirySchema } from "@/lib/validations/enquiry";
 
 export function EnquiryForm({
@@ -38,16 +37,19 @@ export function EnquiryForm({
       return;
     }
     try {
-      const supabase = createClient();
-      const { error: insertError } = await supabase.from("enquiries").insert({
-        ...parsed.data,
-        event_date: parsed.data.event_date || null,
-        guest_count: parsed.data.guest_count || null,
-        budget: parsed.data.budget || null,
-        project_id: parsed.data.project_id || null,
-        status: "NEW",
+      const res = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...parsed.data,
+          event_date: parsed.data.event_date || null,
+          guest_count: parsed.data.guest_count || null,
+          budget: parsed.data.budget || null,
+          project_id: parsed.data.project_id || null,
+        }),
       });
-      if (insertError) throw insertError;
+      const payload = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(payload.error || "Could not send enquiry");
       setStatus("done");
       router.refresh();
     } catch (e) {

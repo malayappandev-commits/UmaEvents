@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { serviceSchema } from "@/lib/validations/service";
+import { slugify } from "@/lib/utils";
 import type { Service } from "@/types";
 
 const field = "w-full border border-white/15 bg-transparent px-3 py-2 text-sm outline-none focus:border-gold";
@@ -11,24 +12,41 @@ const field = "w-full border border-white/15 bg-transparent px-3 py-2 text-sm ou
 export function ServicesManager({ services }: { services: Service[] }) {
   const router = useRouter();
   const [editing, setEditing] = useState<Service | null>(null);
+  const [error, setError] = useState("");
 
   async function save(formData: FormData, id?: string) {
+    setError("");
+    const title = String(formData.get("title") || "");
     const parsed = serviceSchema.safeParse({
-      title: formData.get("title"),
+      title,
+      slug: String(formData.get("slug") || slugify(title)),
       short_description: formData.get("short_description"),
+      long_description: formData.get("long_description"),
+      offerings: String(formData.get("offerings") || "")
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
       image_url: String(formData.get("image_url") || "") || null,
       category: formData.get("category"),
       display_order: Number(formData.get("display_order") || 0),
       published: formData.get("published") === "on",
     });
-    if (!parsed.success) return;
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message || "Invalid service");
+      return;
+    }
     const supabase = createClient();
     const payload = {
       ...parsed.data,
       image_url: parsed.data.image_url || null,
     };
-    if (id) await supabase.from("services").update(payload).eq("id", id);
-    else await supabase.from("services").insert(payload);
+    const { error: dbError } = id
+      ? await supabase.from("services").update(payload).eq("id", id)
+      : await supabase.from("services").insert(payload);
+    if (dbError) {
+      setError(dbError.message);
+      return;
+    }
     setEditing(null);
     router.refresh();
   }
@@ -49,8 +67,8 @@ export function ServicesManager({ services }: { services: Service[] }) {
   async function uploadImage(serviceId: string, file: File) {
     const supabase = createClient();
     const path = `services/${serviceId}-${file.name}`;
-    const { error } = await supabase.storage.from("public-assets").upload(path, file, { upsert: true, contentType: file.type });
-    if (error) return;
+    const { error: up } = await supabase.storage.from("public-assets").upload(path, file, { upsert: true, contentType: file.type });
+    if (up) return;
     const { data } = supabase.storage.from("public-assets").getPublicUrl(path);
     await supabase.from("services").update({ image_url: data.publicUrl }).eq("id", serviceId);
     router.refresh();
@@ -61,13 +79,23 @@ export function ServicesManager({ services }: { services: Service[] }) {
       <form action={(fd) => save(fd, editing?.id)} className="space-y-3">
         <h2 className="font-serif text-2xl">{editing ? "Edit service" : "New service"}</h2>
         <input name="title" required defaultValue={editing?.title} placeholder="Title" className={field} key={editing?.id || "new"} />
-        <textarea name="short_description" defaultValue={editing?.short_description} placeholder="Short description" className={field} rows={4} />
+        <input name="slug" defaultValue={editing?.slug} placeholder="slug (wedding, birthday, …)" className={field} />
+        <textarea name="short_description" defaultValue={editing?.short_description} placeholder="Short description" className={field} rows={3} />
+        <textarea name="long_description" defaultValue={editing?.long_description} placeholder="Longer service information" className={field} rows={4} />
+        <textarea
+          name="offerings"
+          defaultValue={(editing?.offerings || []).join("\n")}
+          placeholder="What we provide — one item per line"
+          className={field}
+          rows={5}
+        />
         <input name="category" defaultValue={editing?.category} placeholder="Category" className={field} />
         <input name="image_url" defaultValue={editing?.image_url ?? ""} placeholder="Image URL (or upload after create)" className={field} />
         <input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} className={field} />
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="published" defaultChecked={editing?.published} /> Published
         </label>
+        {error ? <p className="text-sm text-red-300">{error}</p> : null}
         <div className="flex gap-2">
           <button type="submit" className="bg-gold px-4 py-2 text-[11px] tracking-[0.2em] text-ink uppercase">
             Save
@@ -78,6 +106,9 @@ export function ServicesManager({ services }: { services: Service[] }) {
             </button>
           ) : null}
         </div>
+        <p className="text-xs text-admin-muted">
+          Public URL: /services/{editing?.slug || "slug"}
+        </p>
       </form>
       <ul className="space-y-3">
         {services.map((s) => (
@@ -86,7 +117,7 @@ export function ServicesManager({ services }: { services: Service[] }) {
               <div>
                 <p className="font-serif text-xl">{s.title}</p>
                 <p className="text-xs text-admin-muted">
-                  {s.category} · {s.published ? "Published" : "Hidden"} · order {s.display_order}
+                  /services/{s.slug} · {s.published ? "Published" : "Hidden"} · order {s.display_order}
                 </p>
               </div>
               <div className="flex gap-2 text-xs">
@@ -115,6 +146,7 @@ export function ServicesManager({ services }: { services: Service[] }) {
             />
           </li>
         ))}
+        {!services.length ? <li className="text-admin-muted">No services yet.</li> : null}
       </ul>
     </div>
   );

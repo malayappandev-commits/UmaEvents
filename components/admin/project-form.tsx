@@ -47,6 +47,10 @@ export function ProjectForm({
         .split("\n")
         .map((s) => s.trim())
         .filter(Boolean),
+      live_url: String(formData.get("live_url") || "") || null,
+      is_milestone: formData.get("is_milestone") === "on",
+      milestone_order: Number(formData.get("milestone_order") || 0),
+      milestone_description: String(formData.get("milestone_description") || ""),
     };
     const parsed = projectSchema.safeParse(raw);
     if (!parsed.success) {
@@ -55,8 +59,12 @@ export function ProjectForm({
       return;
     }
     const supabase = createClient();
+    const payload = {
+      ...parsed.data,
+      live_url: parsed.data.live_url || null,
+    };
     if (project) {
-      const { error: u } = await supabase.from("projects").update(parsed.data).eq("id", project.id);
+      const { error: u } = await supabase.from("projects").update(payload).eq("id", project.id);
       if (u) {
         setError(u.message);
         setPending(false);
@@ -71,7 +79,7 @@ export function ProjectForm({
       router.push("/admin/projects");
       router.refresh();
     } else {
-      const { data, error: i } = await supabase.from("projects").insert(parsed.data).select("id").single();
+      const { data, error: i } = await supabase.from("projects").insert(payload).select("id").single();
       if (i || !data) {
         setError(i?.message || "Could not create");
         setPending(false);
@@ -132,6 +140,12 @@ export function ProjectForm({
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" name="featured" defaultChecked={project?.featured} /> Featured
       </label>
+      <input name="live_url" defaultValue={project?.live_url ?? ""} placeholder="Live stream URL (Watch Live)" className={field} />
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" name="is_milestone" defaultChecked={project?.is_milestone} /> Remarkable milestone
+      </label>
+      <input name="milestone_order" type="number" defaultValue={project?.milestone_order ?? 0} placeholder="Milestone order" className={field} />
+      <textarea name="milestone_description" defaultValue={project?.milestone_description ?? ""} rows={3} placeholder="Milestone description" className={field} />
       <div>
         <p className="mb-2 text-[11px] tracking-[0.16em] uppercase text-admin-muted">Assign employees</p>
         <div className="grid gap-2">

@@ -6,10 +6,9 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
-  { href: "/portfolio", label: "Events" },
-  { href: "/contact", label: "Contact" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/about", label: "AboutUS" },
 ];
 
 export function SiteNav({ studioName }: { studioName: string }) {
@@ -49,7 +48,7 @@ export function SiteNav({ studioName }: { studioName: string }) {
             cta,
           )}
         >
-          Enquire
+          ContactUs
         </Link>
       </div>
       <nav className={cn("flex gap-4 overflow-x-auto px-6 pb-4 md:hidden", muted)}>

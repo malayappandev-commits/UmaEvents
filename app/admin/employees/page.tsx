@@ -33,7 +33,7 @@ export default async function EmployeesPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-4xl">People</h1>
+      <h1 className="font-serif text-4xl">Employee Management</h1>
       <EmployeesManager
         people={people ?? []}
         projects={projects ?? []}

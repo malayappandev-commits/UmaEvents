@@ -64,3 +64,14 @@ export function isVideoMime(mime: string) {
 export function isImageMime(mime: string) {
   return mime.startsWith("image/");
 }
+
+/** Watch Live only for real http(s) URLs — not empty strings or arbitrary text. */
+export function isPublicLiveUrl(value: string | null | undefined) {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}

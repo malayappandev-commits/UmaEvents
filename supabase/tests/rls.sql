@@ -8,6 +8,8 @@
 -- insert into enquiries (name, email, phone, message)     -- allowed
 --   values ('Test', 'a@b.c', '000', 'Hello there!!');
 -- select * from enquiries;                                -- denied
+-- select * from testimonials where published = false;     -- denied
+-- select * from gallery_media where published = false;    -- denied
 -- update studio_settings set tagline = 'x' where id = 1;  -- denied
 
 -- 2. As employee assigned only to project A:

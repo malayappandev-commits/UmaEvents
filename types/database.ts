@@ -32,6 +32,10 @@ export type Project = {
   cover_media_id: string | null;
   featured: boolean;
   published: boolean;
+  live_url: string | null;
+  is_milestone: boolean;
+  milestone_order: number;
+  milestone_description: string;
   client_name: string | null;
   show_client_publicly: boolean;
   photographer: string | null;
@@ -72,13 +76,100 @@ export type Media = {
 export type Service = {
   id: string;
   title: string;
+  slug: string;
   short_description: string;
+  long_description: string;
+  offerings: string[];
   image_url: string | null;
   category: string;
   display_order: number;
   published: boolean;
   created_at: string;
   updated_at: string;
+};
+
+export type SiteRating = {
+  id: string;
+  label: string;
+  value: string;
+  caption: string;
+  display_order: number;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WhyChooseUsItem = {
+  id: string;
+  title: string;
+  body: string;
+  display_order: number;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Testimonial = {
+  id: string;
+  quote: string;
+  author_name: string;
+  author_role: string;
+  display_order: number;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ServiceMedia = {
+  id: string;
+  service_id: string;
+  uploaded_by: string | null;
+  type: MediaType;
+  storage_path: string;
+  public_url: string | null;
+  filename: string;
+  mime_type: string;
+  sort_order: number;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ServiceRating = {
+  id: string;
+  service_id: string;
+  customer_name: string;
+  rating: number;
+  review: string;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type GalleryMedia = {
+  id: string;
+  title: string;
+  caption: string;
+  uploaded_by: string | null;
+  type: MediaType;
+  storage_path: string;
+  public_url: string | null;
+  filename: string;
+  mime_type: string;
+  event_date: string | null;
+  display_order: number;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Notification = {
+  id: string;
+  title: string;
+  body: string;
+  href: string | null;
+  read_at: string | null;
+  created_at: string;
 };
 
 export type Enquiry = {
@@ -112,6 +203,11 @@ export type StudioSettings = {
   hero_video_url: string | null;
   about_intro: string;
   about_story: string;
+  brand_quotation: string;
+  who_we_are: string;
+  why_trust_us: string;
+  founder_and_team: string;
+  collaborations: string;
   instagram_url: string | null;
   facebook_url: string | null;
   youtube_url: string | null;

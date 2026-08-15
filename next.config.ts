@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
+  async redirects() {
+    return [{ source: "/portfolio", destination: "/gallery", permanent: false }];
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",

@@ -32,6 +32,11 @@ export function SettingsForm({ settings }: { settings: StudioSettings }) {
       hero_video_url: formData.get("hero_video_url"),
       about_intro: formData.get("about_intro"),
       about_story: formData.get("about_story"),
+      brand_quotation: formData.get("brand_quotation"),
+      who_we_are: formData.get("who_we_are"),
+      why_trust_us: formData.get("why_trust_us"),
+      founder_and_team: formData.get("founder_and_team"),
+      collaborations: formData.get("collaborations"),
       instagram_url: formData.get("instagram_url"),
       facebook_url: formData.get("facebook_url"),
       youtube_url: formData.get("youtube_url"),
@@ -72,6 +77,7 @@ export function SettingsForm({ settings }: { settings: StudioSettings }) {
     <form action={onSubmit} className="mt-8 grid max-w-3xl gap-4">
       <input name="studio_name" defaultValue={settings.studio_name} className={field} />
       <input name="tagline" defaultValue={settings.tagline} placeholder="Tagline" className={field} />
+      <textarea name="brand_quotation" defaultValue={settings.brand_quotation} placeholder="Homepage quotation / brand statement" className={field} rows={2} />
       <input name="hero_headline" defaultValue={settings.hero_headline} placeholder="Hero headline" className={field} />
       <textarea name="hero_subheadline" defaultValue={settings.hero_subheadline} className={field} rows={2} />
       <input name="hero_image_url" defaultValue={settings.hero_image_url ?? ""} placeholder="Hero image URL" className={field} />
@@ -79,7 +85,11 @@ export function SettingsForm({ settings }: { settings: StudioSettings }) {
       <input name="hero_video_url" defaultValue={settings.hero_video_url ?? ""} placeholder="Hero video URL" className={field} />
       <input type="file" accept="video/*" onChange={(e) => e.target.files?.[0] && void uploadHero("video", e.target.files[0])} />
       <textarea name="about_intro" defaultValue={settings.about_intro} rows={3} className={field} />
-      <textarea name="about_story" defaultValue={settings.about_story} rows={8} className={field} />
+      <textarea name="about_story" defaultValue={settings.about_story} rows={6} className={field} />
+      <textarea name="who_we_are" defaultValue={settings.who_we_are} placeholder="Who we are" rows={5} className={field} />
+      <textarea name="why_trust_us" defaultValue={settings.why_trust_us} placeholder="Why trust us" rows={5} className={field} />
+      <textarea name="founder_and_team" defaultValue={settings.founder_and_team} placeholder="Founder and team" rows={5} className={field} />
+      <textarea name="collaborations" defaultValue={settings.collaborations} placeholder="Collaborations" rows={5} className={field} />
       <input name="contact_email" type="email" defaultValue={settings.contact_email} placeholder="Email" className={field} />
       <input name="phone" defaultValue={settings.phone} placeholder="Phone" className={field} />
       <input name="address" defaultValue={settings.address} placeholder="Address" className={field} />
